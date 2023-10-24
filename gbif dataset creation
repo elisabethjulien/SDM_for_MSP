@@ -1,0 +1,22 @@
+install.packages("dplyr")
+library(dplyr)
+
+#import all dowloaded csv files, tab separate them, and use double invereted commas as quote
+file_paths <- list.files(path = "gbifs", pattern = "*.csv", full.names = TRUE)
+data_list <- lapply(file_paths, read_delim, delim = "\t", quote = "\\\"", escape_double = FALSE, trim_ws = TRUE)
+
+#keep only the species name, and coordinate columns
+selected_data_list <- lapply(data_list[1:71], function(df) df[c("species", "decimalLatitude", "decimalLongitude")])
+
+# make sure latitude and longitude are numerical  in all data frames
+for (i in 1:length(selected_data_list)) {
+  selected_data_list[[i]]$decimalLatitude <- as.double(selected_data_list[[i]]$decimalLatitude)
+}
+for (i in 1:length(selected_data_list)) {
+  selected_data_list[[i]]$decimalLongitude <- as.double(selected_data_list[[i]]$decimalLongitude)
+}
+
+# Merge the data frames vertically using bind_rows
+merged_data <- bind_rows(selected_data_list)
+
+# Now, merged_data is a single data frame with one set of column names

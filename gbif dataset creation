@@ -20,3 +20,7 @@ for (i in 1:length(selected_data_list)) {
 merged_data <- bind_rows(selected_data_list)
 
 # Now, merged_data is a single data frame with one set of column names
+
+#get rid of na values and duplicates
+merged_datana <- na.omit(merged_data)
+unique_merged_datana <- unique(merged_datana)

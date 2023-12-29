@@ -34,20 +34,15 @@ unique_merged_datana <- unique_merged_datana %>%
   ))
 
 #just wanted to see how many species/order/family
-# Assuming df is your data frame and "ColumnName" is the column of interest
 unique_values <- unique(unique_merged_datana$species)
-
-# Print or inspect the list of unique values
 print(unique_values)
+
 #to see which species name has too few entries
 # Group by the 'name' column and count the number of rows for each name
 row_counts <-unique_merged_datana %>%
   group_by(species) %>%
   summarize(row_count = n())
-
-# Print the result
 print(row_counts)
-
 view(row_counts)
 
 #centrosymnus has insufficient values, there are some na species
@@ -76,15 +71,11 @@ print(unique_values)
 row_counts <-cleandepthdata %>%
   group_by(water_column_use) %>%
   summarize(row_count = n())
-
-# Print the result
 print(row_counts)
 
 # View rows where the "water_colum_use" column has the value "DefaultValue" to check if i forgoitr a species
 filtered_data <- cleandepthdata %>%
   filter(water_column_use == "DefaultValue")
-
-# Print or view the filtered data
 print(filtered_data)
 
 #make datasets specifically for each msp use 
@@ -223,7 +214,6 @@ library(sdm)
 
 lst <- list.files(path="~/lili master/environmental_variables",pattern='.tif$',full.names = T) # list the name of files in the specified path, match the pattern (means all files with a name ending to asc). We asked to generate full names (i.e., names with the path)
 lst
-# Print the names
 print(raster_names)
 
 dobenmeanltmin<-raster(lst[1])
@@ -285,7 +275,6 @@ tempbenmeanltmaxf<- resample(tempbenmeanltmax, dobenmeanltmin,method='ngb')
 tempbenmeanltminf<- resample(tempbenmeanltmin, dobenmeanltmin,method='ngb')
 tempbenminltmaxf<- resample(tempbenminltmax, dobenmeanltmin,method='ngb')
 tempbenminltminf<- resample(tempbenminltmin, dobenmeanltmin,method='ngb')
-
 tempsurfltmaxf<- resample(tempsurfltmax, dobenmeanltmin,method='ngb')
 tempsurfltminf<- resample(tempsurfltmin, dobenmeanltmin,method='ngb')
 tempsurfltmeanf<- resample(tempsurfltmean, dobenmeanltmin,method='ngb')
@@ -306,13 +295,11 @@ salsurfltmaxf<- resample(salsurfltmax, dobenmeanltmin,method='ngb')
 salsurfltminf<- resample(salsurfltmin, dobenmeanltmin,method='ngb')
 salsurfmeanf<- resample(salsurfmean, dobenmeanltmin,method='ngb')
 salbenminltminf<- resample(salbenminltmin, dobenmeanltmin,method='ngb')
-
 iceltmaxf<- resample(iceltmax, dobenmeanltmin,method='ngb')
 iceltminf<- resample(iceltmin, dobenmeanltmin,method='ngb')
 icemeanf<- resample(icemean, dobenmeanltmin,method='ngb')
 swsbenmeanf<- resample(swsbenmean, dobenmeanltmin,method='ngb')
 rugbenmeanf<- resample(rugbenmean, dobenmeanltmin,method='ngb')
-tpibenmeanf<- resample(tpibenmean, dobenmeanltmin,method='ngb')
 tphybenmeanltminf<- resample(tphybenmeanltmin, dobenmeanltmin,method='ngb')
 
 plot(tphybenmeanltminf)
@@ -361,7 +348,6 @@ preds <- stack(dobenmeanmeanf,
 
 preds <- writeRaster(preds,'predictors24nov.tif')
 
-
 sp_data$occurrence <- 1
 
 class(sp_data) # it is a SpatialPointsDataFrame
@@ -377,7 +363,6 @@ plot(sp_data)
 library(usdm)
 spx <- extract(preds, sp_data)
 
-
 head(spx)
 class(spx)
 spx <- data.frame(spx)
@@ -389,7 +374,7 @@ cor_matrix <- cor(spx)
 
 install.packages("car")
 library(car)
-vif_values <- car::vif(lm(sp_data$occurrence ~ ., data = spx))  # Replace 'y' with your response variable
+vif_values <- car::vif(lm(sp_data$occurrence ~ ., data = spx))  
 spx_clean <- spx[, !duplicated(t(spx))]  # Remove duplicated columns
 
 v <- vifstep(spx_clean)

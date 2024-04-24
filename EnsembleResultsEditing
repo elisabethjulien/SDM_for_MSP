@@ -1,0 +1,61 @@
+#Organisation of ensemble rasters 
+#rescaling of range of values
+
+# Load the raster package
+library(raster)
+
+# Define the rescale function
+rescalemble <- function(raster_layer) {
+  # Get the min-max values
+  minmax_r <- range(values(raster_layer), na.rm = TRUE)
+  
+  # Rescale
+  rescaled_values <- (raster_layer - minmax_r[1]) / diff(minmax_r)
+  
+  return(rescaled_values)
+}
+
+# Create an empty list to store rescaled rasters
+rescaled_raster_list <- list()
+
+# Import each raster file, rescale, and store the rescaled raster in the list
+for (file in raster_files) {
+  # Import raster
+  raster_data <- raster(file)
+  
+  # Rescale the raster
+  rescaled_raster <- rescalemble(raster_data)
+  
+  # Store the rescaled raster in the list
+  rescaled_raster_list[[basename(file)]] <- rescaled_raster
+}
+
+# Check the list of rescaled rasters
+print(rescaled_raster_list)
+
+# Define the directory containing raster files
+raster_dir <- "C://resULLTSUP"
+
+# List all the raster files in the directory
+raster_files <- list.files(raster_dir, pattern=".tif$", full.names=TRUE) 
+
+# Create an empty list to store rescaled rasters
+rescaled_raster_list <- list()
+
+# Import each raster file, rescale, and store the rescaled raster in the list
+for (file in raster_files) {
+  # Import raster
+  raster_data <- raster(file)
+  
+  # Rescale the raster
+  rescaled_raster <- rescalemble(raster_data)
+  
+  # Store the rescaled raster in the list
+  rescaled_raster_list[[basename(file)]] <- rescaled_raster
+}
+
+# Stack the rescaled rasters into a raster stack
+rescaled_raster_stack <- stack(rescaled_raster_list)
+
+# Plot the rescaled raster stack
+plot(rescaled_raster_stack)

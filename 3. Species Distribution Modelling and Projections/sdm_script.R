@@ -46,10 +46,6 @@ sdm_for_each_spp <- function(df) {
     water_use <- unique(species_df$`water use`)
     distribution <- unique(species_df$distribution)
     
-    if (length(water_use) != 1 || length(distribution) != 1) {
-      stop("Each species should have a unique value for water use and distribution")
-    }
-    
     predictors <- set_predictors(water_use, distribution)
     
     # Number of occurrences
@@ -83,4 +79,8 @@ sdm_for_each_spp <- function(df) {
 
 # Example usage
 results <- sdm_for_each_spp(mothersppdata)
+
+
+
+
 

@@ -38,6 +38,92 @@ oceanrast <- terra::rast(oceanrast)
 extracted_values <- extract(oceanrast, cbind(df$lon, df$lat))
 df <- df[extracted_values != 0, ]
 
+#add water column use for each species
+df <- df %>%
+  mutate(
+    water_column_use = case_when(
+      species  %in% c("Acanthocybium_solandri",
+                      "Balaenoptera_acutorostrata",
+                      "Balaenoptera_borealis", 
+                      "Balaenoptera_musculus",
+                      "Balaenoptera_physalus",
+                      "Caretta_caretta", 
+                      "Cetorhinus_maximus",
+                      "Coryphaena_hippurus",
+                      "Decapterus_punctatus",
+                      "Delphinus_delphis" ,
+                      "Dermochelys_coriacea",
+                      "Engraulis_encrasicolus" ,
+                      "Eubalaena_glacialis",
+                      "Globicephala_macrorhynchus",
+                      "Grampus_griseus",
+                      "Katsuwonus_pelamis" ,
+                      "Lamna_nasus",
+                      "Makaira_nigricans",
+                      "Megaptera_novaeangliae",
+                      "Orcinus_orca",
+                      "Physeter_macrocephalus" ,
+                      "Pseudorca_crassidens",
+                      "Sardina_pilchardus",
+                      "Scomber_scombrus",
+                      "Seriola_dumerili",
+                      "Sphyraena_barracuda",
+                      "Stenella_coeruleoalba" ,
+                      "Stenella_frontalis",
+                      "Thunnus_alalunga" ,
+                      "Thunnus_albacares",
+                      "Thunnus_obesus" ,
+                      "Thunnus_thynnus",
+                      "Trachurus_trachurus",
+                      "Tursiops_truncatus",
+                      "Xiphias_gladius",
+                      "Ziphius_cavirostris" 
+                      ) ~ "pelagic",
+      species %in% c("Centroscymnus_coelolepis",
+                     "Cymodocea_nodosa" ,
+                     "Centrophorus_squamosus",
+                     "Desmophyllum_pertusum" ,
+                     "Dicentrarchus_labrax",
+                     "Dipturus_batis",
+                     "Hippocampus_guttulatus",
+                     "Hippocampus_hippocampus",
+                     "Hoplostethus_atlanticus",
+                     "Laminaria_hyperborea",
+                     "Laminaria_ochroleuca",
+                     "Lithothamnion_corallioides",
+                     "Loligo_vulgaris",
+                     "Merluccius_merluccius",
+                     "Mytilus_galloprovincialis",
+                     "Octopus_vulgaris",
+                     "Ostrea_edulis",
+                     "Pagellus_bogaraveo",
+                     "Palaemon_serratus",
+                     "Phyllariopsis_brevipes",
+                     "Phymatolithon_calcareum",
+                     "Pollicipes_pollicipes",
+                     "Raja_clavata",
+                     "Raja_montagui",
+                     "Rostroraja_alba",
+                     "Ruditapes_decussatus",
+                     "Saccharina_latissima",
+                     "Saccorhiza_polyschides",
+                     "Scophthalmus_maximus",
+                     "Solea_solea",
+                     "Sparus_aurata",
+                     "Squalus_acanthias",
+                     "Squatina_squatina",
+                     "Undaria_pinnatifida",
+                     "Venerupis_corrugata",
+                     "Zeus_faber",
+                     "Zostera_marina",
+                     "Lophius_piscatorius"
+                     )   ~ "benthic_demersal",
+      TRUE ~ NA_character_  # Assigns NA to other species not specified
+    ))
+
+#add distribution scale for each species
+...
+
 #save df as csv
 write.csv(df, "://df.csv", row.names = FALSE)
 

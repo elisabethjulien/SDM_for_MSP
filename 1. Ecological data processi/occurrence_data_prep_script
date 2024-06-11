@@ -3,15 +3,27 @@ library(readr)
 library(raster)
 library(terra)
 
-#import OBIS files, merge them by columns of interest
-df <- merge(obisa, obisb, by = c("scientificname", "decimallatitude", "decimallongitude"), all = TRUE)
+#import all dowloaded csv files from GBIF
+file_paths <- list.files(path = "://gbifs", pattern = "*.csv", full.names = TRUE)
+data_list <- lapply(file_paths, read_delim, delim = "\t", quote = "\\\"", escape_double = FALSE, trim_ws = TRUE)
+
+#keep only data columns of interest, merge all files into one data frame
+selected_data_list <- lapply(data_list[1:75], function(df) df[c("species", "decimalLatitude", "decimalLongitude")])
+gbifdf <- bind_rows(selected_data_list)
 
 #rename columns
-df <- df %>%
+gbifdf <- gbifdf %>%
+  rename(lat = decimalLatitude, lon = decimalLongitude, species= species)
+
+#import OBIS files, merge them by columns of interest
+obisdf <- merge(obisa, obisb, by = c("scientificname", "decimallatitude", "decimallongitude"), all = TRUE)
+
+#rename columns
+obisdf <- obisdf %>%
   rename(lat = decimallatitude, lon = decimallongitude, species= scientificname)
 
-#import GBIF files, merge them by columns of interest
-...
+#merge obis and gbif data
+df <- merge(df, obisb, by = c("scientificname", "decimallatitude", "decimallongitude"), all = TRUE)
 
 #make sure latitude and longitude values are numeric
 df$lon <- as.double(df$lon)

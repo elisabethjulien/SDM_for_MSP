@@ -22,9 +22,9 @@ sdm_for_each_spp <- function(df) {
       }
     } else if (distribution == "european") {
       if (water_use == "pelagic") {
-        return(medsurf)
+        return(eurosurf)
       } else if (water_use == "benthic") {
-        return(medbenth)
+        return(eurobenth)
       }
     }
     stop("Invalid combination of water use and distribution")

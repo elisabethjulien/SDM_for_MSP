@@ -16,7 +16,7 @@ raster_list <- lapply(tif_files, raster)
 benthic_files <- tif_files[grepl("Benthic", file_names, ignore.case = TRUE)]
 surface_files <- tif_files[!grepl("Benthic", file_names, ignore.case = TRUE)]
 
-#Filter files based on time slices
+#Filter files based on selected variables and time slices
 pattern <- "(DissolvedMolecularOxygen BenthicMean Mean|pH BenthicMean Ltmin|TotalPhytoplankton BenthicMean Mean|Salinity BenthicMean Mean|OceanTemperature BenthicMean Ltmax).*2030-2040\\.tif$"
 #below, "bent58525"'s name can be broken down into three components: bent = benthic environmental data, 585= SSP585, 35=2030-2040
 bent58535 <- benthic_files[grep(pattern, benthic_files)]

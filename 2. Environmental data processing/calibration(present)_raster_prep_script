@@ -1,0 +1,20 @@
+library(raster)
+# list files of present environmental data
+lst <- list.files(path="~//environmental_variables",pattern='.tif$',full.names = T) 
+
+#crop the rasters of present environmental variables to different extents for model calibrations
+atlantic_extent <- extent(c(-80, 40, -50, 75))  # xmin, xmax, ymin, ymax
+atlanticbenth <- crop(benth,atlantic_extent)
+atlanticbenth <- stack(atlanticbenth)
+atlanticsurf <- crop(surf,atlantic_extent)
+atlanticsurf <- stack(atlanticsurf)
+northatlantic_extent <- extent(c(-80, 40, 20, 65))  # xmin, xmax, ymin, ymax
+northatlanticbenth <- crop(benth,northatlantic_extent)
+northatlanticbenth <- stack(northatlanticbenth)
+northatlanticsurf <- crop(surf,northatlantic_extent)
+northatlanticsurf <- stack(northatlanticsurf)
+euro_extent <- extent(c(-15, 20, 25, 75))  # xmin, xmax, ymin, ymax
+eurosurf <- crop(surf,euro_extent)
+eurosurf <- stack(eurosurf)
+eurobenth <- crop(benth,euro_extent)
+eurobenth <- stack(eurobenth)

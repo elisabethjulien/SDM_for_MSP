@@ -1,0 +1,43 @@
+library(dplyr)
+library(readr)
+library(raster)
+library(terra)
+
+#import OBIS files, merge them by columns of interest
+df <- merge(obisa, obisb, by = c("scientificname", "decimallatitude", "decimallongitude"), all = TRUE)
+
+#rename columns
+df <- df %>%
+  rename(lat = decimallatitude, lon = decimallongitude, species= scientificname)
+
+#import GBIF files, merge them by columns of interest
+...
+
+#make sure latitude and longitude values are numeric
+df$lon <- as.double(df$lon)
+df$lat <- as.double(df$lat)
+
+#inspect data for discrepancies (in species name) and correct if necessary
+unique_values <- unique(df$species)
+print(unique_values)
+df <- df %>%
+  mutate(species = ifelse(species == "Tursiops truncatus truncatus", "Tursiops truncatus", species))
+
+#delete incomplete entries
+df <- df[complete.cases(df$lat, df$lon), ]
+#delete duplicate entries
+df <- unique(df)
+
+#replace space in species names by underscore for practicality
+df$species <- gsub(" ", "_", df$species)
+
+#filter out for land occurrences, using a marine environment raster 
+file_path <- "://OceanTemperature Surface Mean 2010-2020.tif"
+oceanrast <- raster(file_path)
+oceanrast <- terra::rast(oceanrast)
+extracted_values <- extract(oceanrast, cbind(df$lon, df$lat))
+df <- df[extracted_values != 0, ]
+
+#save df as csv
+write.csv(df, "://df.csv", row.names = FALSE)
+

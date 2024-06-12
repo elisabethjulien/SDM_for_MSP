@@ -1,9 +1,9 @@
 #load depth data as raster
-file_path <- "://depthraster.tif"
+file_path <- "~//depthraster.tif"
 depth <- raster(file_path)
 
 #load environmental data as rasters
-tif_folder <- "://environmental_data"
+tif_folder <- "~//environmental_data"
 tif_files <- list.files(tif_folder, pattern = "\\.tif$", full.names = TRUE)
 file_names <- basename(tif_files)
 print(file_names)
@@ -33,4 +33,4 @@ depth<-crop(depth, crop_extent)
 ECPbent_585_35<-stack(ECPbent_585_35, depth)
 
 #save raster
-writeRaster(ECPbent_585_35, filename = "://ECPbent_585_35.tif", format = "GTiff")
+writeRaster(ECPbent_585_35, filename = "~//ECPbent_585_35.tif", format = "GTiff")

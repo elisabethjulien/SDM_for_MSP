@@ -4,7 +4,7 @@ library(raster)
 library(terra)
 
 #import all dowloaded csv files from GBIF
-file_paths <- list.files(path = "://gbifs", pattern = "*.csv", full.names = TRUE)
+file_paths <- list.files(path = "~//gbifs", pattern = "*.csv", full.names = TRUE)
 data_list <- lapply(file_paths, read_delim, delim = "/t", quote = "///", escape_double = FALSE, trim_ws = TRUE)
 
 #keep only data columns of interest, merge all files into one data frame
@@ -16,8 +16,7 @@ gbifdf <- gbifdf %>%
   rename(lat = decimalLatitude, lon = decimalLongitude, species= species)
 
 #import OBIS files, merge them by columns of interest
-file_paths <- list.files(path = "://obis", pattern = "*.csv", full.names = TRUE)
-file_paths <- list.files(path = "C:/Users/elili/Documents/M2 R/SMALL PELAGIC/csv creation/obis/New Folder", pattern = "*.csv", full.names = TRUE)
+file_paths <- list.files(path = "~//obis", pattern = "*.csv", full.names = TRUE)
 data_list <- lapply(file_paths, read_csv)
 obisdf <- merge(data_list,data_list, by = c("scientificname", "decimallatitude", "decimallongitude"), all = TRUE)
 obisdf <- obisdf %>% select(scientificname, decimallatitude, decimallongitude)
@@ -48,7 +47,7 @@ df <- unique(df)
 df$species <- gsub(" ", "_", df$species)
 
 #filter out for land occurrences, using a marine environment raster 
-file_path <- "://OceanTemperature Surface Mean 2010-2020.tif"
+file_path <- "~//OceanTemperature Surface Mean 2010-2020.tif"
 oceanrast <- raster(file_path)
 oceanrast <- terra::rast(oceanrast)
 extracted_values <- extract(oceanrast, cbind(df$lon, df$lat))
@@ -141,4 +140,4 @@ df <- df %>%
 ...
 
 #save df as csv
-write.csv(df, "://df.csv", row.names = FALSE)
+write.csv(df, "~//df.csv", row.names = FALSE)

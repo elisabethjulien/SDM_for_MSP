@@ -22,33 +22,10 @@ This repository contains the data and R scripts used in the study "Projecting Ch
 ## Abstract
 (Provide the abstract of your study here.)
 
-## How to Use
-1. **Clone the repository**:
-    ```sh
-    git clone https://github.com/yourusername/your-repo-name.git
-    ```
-2. **Navigate to the project directory**:
-    ```sh
-    cd your-repo-name
-    ```
-3. **Run the scripts**:
-    - Ensure you have R and necessary packages installed.
-    - Follow the order of the scripts as listed above for data processing, modelling, and visualization.
-
 ## Requirements
 - R (version x.x.x or higher)
 - List of R packages required (e.g., `dplyr`, `ggplot2`, etc.)
 
-## Contact
-For any questions or issues, please contact [Elisabeth Julien](mailto:elili.julien@gmail.com).
-
 ---
 
-### Example Abstract
-(Include your abstract text here)
-
----
-
-### License
-(Include information about the license if applicable, e.g., MIT License)
 

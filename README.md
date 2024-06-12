@@ -1,4 +1,4 @@
-# Projecting Changes in Marine Biota to Support Climate Resilient Portuguese MSP
+# Species Distribution Modelling  of Marine Biota to Support Climate Resilient MSP
 
 ## Authors
 - Elisabeth Julien* 

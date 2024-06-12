@@ -34,7 +34,7 @@ for (file in raster_files) {
 print(rescaled_raster_list)
 
 # Define the directory containing raster files
-raster_dir <- "C://resULLTSUP"
+raster_dir <- "~//results"
 
 # List all the raster files in the directory
 raster_files <- list.files(raster_dir, pattern=".tif$", full.names=TRUE) 

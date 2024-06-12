@@ -78,4 +78,4 @@ sdm_for_each_spp <- function(df) {
 }
 
 # Example usage
-results <- sdm_for_each_spp(mothersppdata)
+results <- sdm_for_each_spp(df)

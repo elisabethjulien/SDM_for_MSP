@@ -84,8 +84,10 @@ file_path <- "C:/Users/elili/Desktop/1907BIGREZ/triés/aquapres.tif"
 # Save the raster layer
 writeRaster(aquapres, file_path, format = "GTiff", overwrite = TRUE)
 
+
 # etc.. further data explorations encouraged. 
 #For more specifications on species selection per MSP use, consult Methods 
+#Now that raster files are organised -> start mapping (see 4. b)
 
 
 

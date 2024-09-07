@@ -1,4 +1,4 @@
-
+#Here, a table is made with average habitat suitability across regions. While the regions considered below are expansive and most contain high variability, the results may not be very ecologically relevant. However, they may quantify a trend, the numerical value of which may complement map interpretation. 
 
 raster_stats <- function(raster_file) {
   r <- raster(raster_file)

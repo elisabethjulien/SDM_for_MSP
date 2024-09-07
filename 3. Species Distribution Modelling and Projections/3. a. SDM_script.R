@@ -1,12 +1,13 @@
 library(sdm)
+installAll() #make sure you have all the dependencies of sdm package
 library(dismo)
 library(sp)
 
+#building a function to SDM many species with a few variations, according to water column use, distribution range, and as many background points as there are occurrences of the species
+
 sdm_for_each_spp <- function(df) {
-  library(sdm)
-  library(dismo)
-  
-  # Define a function to set predictors based on conditions
+
+  #set predictors based on conditions
   set_predictors <- function(water_column_use, distribution) {
     if (distribution == "global") {
       if (water_colummn_use == "pelagic") {
@@ -38,9 +39,6 @@ sdm_for_each_spp <- function(df) {
   # Loop through each species
   for (species in unique_species) {
     species_df <- df[df$species == species, ]
-    
-    # Remove the unwanted column
-    species_df$...1 <- NULL
     
     # Set predictors based on the conditions
     water_use <- unique(species_df$`water use`)
@@ -79,3 +77,5 @@ sdm_for_each_spp <- function(df) {
 
 # Example usage
 results <- sdm_for_each_spp(df)
+
+#next step wil be organising and visulising the results (see section 4)

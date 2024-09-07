@@ -1,0 +1,306 @@
+
+
+raster_stats <- function(raster_file) {
+  r <- raster(raster_file)
+  mean_value <- mean(r[], na.rm = TRUE)
+  std_dev <- sd(r[], na.rm = TRUE)
+  return(c(mean = mean_value, std_dev = std_dev))
+}
+
+
+raster_difference <- function(raster_file1, raster_file2) {
+  r1 <- raster(raster_file1)
+  r2 <- raster(raster_file2)
+  difference <- mean(r1[] - r2[], na.rm = TRUE)
+  return(difference)
+}
+
+raster_files <- list(
+  conpres=rast(conpres.tif),
+  con24555=rast(con24555.tif),
+  con24595=rast(con24595.tif),
+  con58555=rast(con58555.tif),
+  con58595=rast(con58595.tif),
+  pescapres=rast(pescapres.tif),
+  pesca24555=rast(pesca24555.tif),
+  pesca24595=rast(pesca24595.tif),
+  pesca58555=rast(pesca58555.tif),
+  pesca58595=rast(pesca58595.tif),
+  aquapres=rast(aquapres.tif),
+  aqua24555=rast(aqua24555.tif),
+  aqua24595=rast(aqua24595.tif),
+  aqua58555=rast(aqua58555.tif),
+  aqua58595=rast(aqua58595.tif),
+  turismopres=rast(turismopres.tif),
+  turismo24555=rast(turismo24555.tif),
+  turismo24595=rast(turismo24595.tif),
+  turismo58555=rast(turismo58555.tif),
+  turismo58595=rast(turismo58595.tif)
+)
+
+stats <- data.frame(raster = character(), mean = numeric(), std_dev = numeric(), stringsAsFactors = FALSE)
+
+str(stats)
+for (raster_name in names(raster_files)) {
+  raster_path <- raster_files[[raster_name]]
+  raster_stat <- raster_stats(raster_path)
+  stats <- rbind(stats, data.frame(raster = raster_name, mean = raster_stat[1], std_dev = raster_stat[2]))
+}
+
+group_means <- lapply(c("con", "pesca", "aqua", "turismo"), function(prefix) {
+  raster_paths <- grep(paste0("^", prefix), names(raster_files), value = TRUE)
+  mean_values <- sapply(raster_paths, function(raster_name) {
+    raster_path <- raster_files[[raster_name]]
+    raster_stat <- raster_stats(raster_path)
+    return(raster_stat[1])
+  })
+  mean_value <- mean(mean_values)
+  data.frame(raster = paste0(prefix, "_mean"), mean = mean_value, std_dev = NA)
+})
+
+group_means <- lapply(c("conpres.tif", "pescapres.tif", "aquapres.tif", "turismopres.tif"), function(prefix) {
+  raster_paths <- grep(paste0("^", prefix), names(raster_files), value = TRUE)
+  mean_values <- sapply(raster_paths, function(raster_name) {
+    raster_path <- raster_files[[raster_name]]
+    raster_stat <- raster_stats(raster_path)
+    return(raster_stat[1])
+  })
+  std_dev_values <- sapply(raster_paths, function(raster_name) {
+    raster_path <- raster_files[[raster_name]]
+    raster_stat <- raster_stats(raster_path)
+    return(raster_stat[2])
+  })
+  mean_value <- mean(mean_values)
+  std_dev_value <- mean(std_dev_values)
+  data.frame(raster = paste0(prefix, "_mean"), mean = mean_value, std_dev = std_dev_value)
+})
+
+name_endings <- c("pres.tif", "24555.tif", "24595.tif", "58555.tif", "58595.tif")
+
+name_end_means <- lapply(name_endings, function(ending) {
+  raster_paths <- grep(paste0(ending, "$"), names(raster_files), value = TRUE)
+  mean_values <- sapply(raster_paths, function(raster_name) {
+    raster_path <- raster_files[[raster_name]]
+    raster_stat <- raster_stats(raster_path)
+    return(raster_stat[1])
+  })
+  std_dev_values <- sapply(raster_paths, function(raster_name) {
+    raster_path <- raster_files[[raster_name]]
+    raster_stat <- raster_stats(raster_path)
+    return(raster_stat[2])
+  })
+  mean_value <- mean(mean_values)
+  std_dev_value <- mean(std_dev_values)
+  data.frame(raster = paste0("mean_", ending), mean = mean_value, std_dev = std_dev_value)
+})
+
+library(dplyr)
+# Append rows to stats
+stats <- bind_rows(stats, group_means, name_end_means)
+
+
+# Append rows to stats
+stats <- bind_rows(stats, group_means, name_end_means)
+library(tidyverse)
+
+stats_wide$mean_58555.tif=NULL
+# View the result
+print(stats_wide)
+stats_wide <- stats_wide %>%
+  mutate(across(everything(), ~ if(is.list(.)) unlist(.) else .))
+
+# Save the dataframe as a CSV file
+write.csv(stats, "C:/Users/elili/Desktop/1907BIGREZ/stats.csv", row.names = FALSE)
+write.csv(stats_wide, "C:/Users/elili/Desktop/1907BIGREZ/stats_wide.csv", row.names = FALSE)
+
+#now for with masks
+# Function to apply masks to a list of rasters
+mask_rasters <- function(raster_list, masks) {
+  # Create an empty list to store the masked rasters
+  masked_rasters <- list()
+  
+  # Iterate over each raster in the list
+  for (raster_name in names(raster_list)) {
+    raster <- raster_list[[raster_name]]
+    
+    # Apply each mask to the raster and store the results
+    masked_rasters[[paste0(raster_name, "_madmask")]] <- mask(raster, masks$mad)
+    masked_rasters[[paste0(raster_name, "_azmask")]] <- mask(raster, masks$az)
+    masked_rasters[[paste0(raster_name, "_contimask")]] <- mask(raster, masks$conti)
+    masked_rasters[[paste0(raster_name, "_conticlosemask")]] <- mask(raster, masks$conticlose)
+  }
+  
+  return(masked_rasters)
+}
+
+
+masks <- list(
+  mad = madeira,
+  az = azores,
+  conti = conti,
+  conticlose = conticlose
+)
+
+masked_rasters <- mask_rasters(raster_files, masks)
+
+###################################"
+raster_stats <- function(raster) {
+  mean_value <- global(raster, fun = "mean", na.rm = TRUE)[[1]]
+  std_dev <- global(raster, fun = "sd", na.rm = TRUE)[[1]]
+  return(c(mean = mean_value, std_dev = std_dev))
+}
+
+# Function to compute overall stats for a subset of rasters
+aggregate_stats <- function(raster_subset) {
+  all_values <- unlist(lapply(raster_subset, function(r) values(r)), use.names = FALSE)
+  mean_value <- mean(all_values, na.rm = TRUE)
+  std_dev <- sd(all_values, na.rm = TRUE)
+  return(c(mean = mean_value, std_dev = std_dev))
+}
+
+# Function to apply raster_stats to each raster in a list and return a data frame
+process_raster_stats <- function(raster_list) {
+  stats_list <- list()
+  
+  # Compute stats for each raster
+  for (raster_name in names(raster_list)) {
+    stats <- raster_stats(raster_list[[raster_name]])
+    stats_list[[raster_name]] <- data.frame(
+      raster = raster_name,
+      mean = stats["mean"],
+      std_dev = stats["std_dev"]
+    )
+  }
+  
+  # Combine all individual data frames into one
+  stats_df <- do.call(rbind, stats_list)
+  
+  # Compute aggregate stats for each subset and add as additional rows
+  suffixes <- c("madmask", "azmask", "contimask", "conticlosemask")
+  prefixes <- c("58555_", "58595_", "24555_", "24595_", "pres_")
+  
+  for (suffix in suffixes) {
+    for (prefix in prefixes) {
+      subset_rasters <- raster_list[grep(paste0("^", prefix, ".*", suffix, "$"), names(raster_list))]
+      if (length(subset_rasters) > 0) {
+        stats <- aggregate_stats(subset_rasters)
+        stats_df <- rbind(stats_df, data.frame(
+          raster = paste0("Aggregate_", prefix, suffix),
+          mean = stats["mean"],
+          std_dev = stats["std_dev"]
+        ))
+      }
+    }
+  }
+  
+  rownames(stats_df) <- NULL  # Remove row names
+  return(stats_df)
+}
+
+masked_raster_stats <- process_raster_stats(masked_rasters)
+
+# Check the results
+print(masked_raster_stats)
+str(masked_raster_stats)
+
+write.csv(masked_raster_stats, "C:/Users/elili/Desktop/1907BIGREZ/masked_raster_stats.csv", row.names = FALSE)
+
+
+raster_stats <- function(raster) {
+  mean_value <- global(raster, fun = "mean", na.rm = TRUE)[[1]]
+  std_dev <- global(raster, fun = "sd", na.rm = TRUE)[[1]]
+  return(c(mean = mean_value, std_dev = std_dev))
+}
+
+# Function to compute overall stats for a subset of rasters
+aggregate_stats <- function(raster_subset) {
+  all_values <- unlist(lapply(raster_subset, function(r) values(r)), use.names = FALSE)
+  mean_value <- mean(all_values, na.rm = TRUE)
+  std_dev <- sd(all_values, na.rm = TRUE)
+  return(c(mean = mean_value, std_dev = std_dev))
+}
+
+# Function to apply raster_stats to each raster in a list and return a data frame
+process_raster_stats <- function(raster_list) {
+  stats_list <- list()
+  
+  # Compute stats for each raster
+  for (raster_name in names(raster_list)) {
+    stats <- raster_stats(raster_list[[raster_name]])
+    stats_list[[raster_name]] <- data.frame(
+      raster = raster_name,
+      mean = stats["mean"],
+      std_dev = stats["std_dev"]
+    )
+  }
+  
+  # Combine all individual data frames into one
+  stats_df <- do.call(rbind, stats_list)
+  
+  # Compute aggregate stats for each subset and add as additional rows
+  suffixes <- c("madmask", "azmask", "contimask", "conticlosemask")
+  prefixes <- c("pres", "58595", "58555", "24555", "24595")
+  
+  for (suffix in suffixes) {
+    for (prefix in prefixes) {
+      subset_rasters <- raster_list[grep(paste0(prefix, ".*", suffix, "$"), names(raster_list))]
+      if (length(subset_rasters) > 0) {
+        stats <- aggregate_stats(subset_rasters)
+        stats_df <- rbind(stats_df, data.frame(
+          raster = paste0("Aggregate_", prefix, "_", suffix),
+          mean = stats["mean"],
+          std_dev = stats["std_dev"]
+        ))
+      }
+    }
+  }
+  
+  rownames(stats_df) <- NULL  # Remove row names
+  return(stats_df)
+}
+
+
+# Calculate statistics for each masked raster and the aggregates
+masked_raster_stats <- process_raster_stats(masked_rasters)
+
+# Check the results
+print(masked_raster_stats)
+
+stats <- rbind(masked_raster_stats, stats)
+file_path <- "C:/Users/elili/Desktop/nice graphs/stats_by_use_summary.csv"
+
+# Save the data frame to a CSV file
+write.csv(stats, file_path, row.names = FALSE)
+
+#####################################################"
+###by spp
+
+head(rescaled_raster_list)
+
+raster_stats <- function(raster, name) {
+  # Check if the raster has values
+  if (nlayers(raster) == 0) {
+    cat("Raster", name, "has no layers.\n")
+    return(data.frame(raster = name, mean = NA, std_dev = NA))
+  }
+  
+  # Calculate mean and standard deviation
+  mean_value <- cellStats(raster, stat = 'mean', na.rm = TRUE)
+  std_dev <- cellStats(raster, stat = 'sd', na.rm = TRUE)
+  
+  # Return as a data frame
+  return(data.frame(raster = name, mean = mean_value, std_dev = std_dev))
+}
+
+# Apply raster_stats function to each raster in the list and combine into a data frame
+stats_df <- do.call(rbind, lapply(names(rescaled_raster_list), function(name) {
+  cat("Processing raster:", name, "\n")
+  raster_stats(rescaled_raster_list[[name]], name)
+}))
+
+# Format the mean and std_dev columns to display as decimal values
+stats_df$mean <- as.numeric(format(stats_df$mean, scientific = FALSE, digits = 6))
+stats_df$std_dev <- as.numeric(format(stats_df$std_dev, scientific = FALSE, digits = 6))
+
+
+write.csv(stats_df, file = "C:/xxx/stats_by_spp_summary.csv", row.names = FALSE)

@@ -87,8 +87,100 @@ file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/TUPEM29032018.shp"
 tupem<- st_read(file_path)
 
 #ok moving on to making a map
+#example
 
-References:
+library(sp)
+plot(con58595, col=cols)
+plot(grat, add = TRUE, col = "white")
+#crs(conpres) <- CRS("+proj=utm +zone=33 +datum=WGS84") # Set a CRS for the raster
+#azores <- st_transform(ecp, crs(conpres))
+#ecp <- st_transform(ecp, crs(conpres))
+#conti <- st_transform(conti, crs(conpres))
+#madeira <- st_transform(madeira, crs(conpres))
+#conticlose <- st_transform(conticlose, crs(conpres))
+
+plot(azores, add = TRUE, col = "transparent", border = "grey",lwd=2)
+plot(ecp, add = TRUE, col = "transparent", border =  "grey",lwd=2)
+plot(conti, add = TRUE, col = "transparent", border =  "grey",lwd=2)
+plot(madeira, add = TRUE, col = "transparent", border =  "grey",lwd=2)
+#
+plot(st_geometry(ospcol), add = TRUE, border = "black", lwd = 1.7, col = NA)
+plot(st_geometry(ospcola), add = TRUE, border = "black", lwd = 1.7, col = NA)
+plot(st_geometry(torremadeira), add = TRUE, border = "black", lwd = 1.7, col = NA)
+plot(st_geometry(greatmeteor), add = TRUE, border ="black", lwd = 1.7, col = NA)
+plot(st_geometry(naz), add = TRUE, border = "black", lwd = 1.7, col = NA)
+plot(st_geometry(cabosaovi), add = TRUE, border = "black", lwd = 1.7, col = NA)
+plot(st_geometry(fracturahayes), add = TRUE, border = "black", lty = "dotted", lwd = 1.7, col = NA)
+plot(st_geometry(vulcoesdelama), add = TRUE, border = "black", lty = "dotted", lwd = 1.7, col = NA)
+plot(st_geometry(bancovigo), add = TRUE, border = "black", lty = "dotted", lwd = 1.7, col = NA)
+plot(st_geometry(baiaarmacaodepera), add = TRUE, border = "black", lty = "dotted", lwd = 1.7, col = NA)
+plot(st_geometry(amperecoral), add = TRUE, border = "black", lty = "dotted", lwd = 1.7, col = NA)
+plot(st_geometry(vmes), add = TRUE, pch = 17, col = "black", fill = "red", lwd = 3)
+plot(st_geometry(altair), add = TRUE, border = "black", lwd = 1.7, col = NA)
+plot(st_geometry(antialtair), add = TRUE, border = "black", lwd = 1.7, col = NA)
+plot(st_geometry(marna), add = TRUE, border = "black", lwd = 1.7, col = NA)
+plot(st_geometry(josephine), add = TRUE, border = "black", lwd = 1.7, col = NA)
+
+lines(c(scalebar_x, scalebar_x + scalebar_length / 100), 
+      c(scalebar_y, scalebar_y), lwd = 2, col = "black")
+text(scalebar_x + scalebar_length / 200, scalebar_y - 0.5, 
+     paste0(scalebar_length, " km"), cex = 0.6, adj = c(0.5, 1))
+addnortharrow(pos = "topleft", padin = c(0.1, 0.1), scale = 0.4, col = "black")
+
+plot(NA, xlim = c(0, 1), ylim = c(0, 1), type = "n", xaxt = "n", yaxt = "n", axes= FALSE)
+legend("bottomright", 
+       legend = c("Jurisdictional borders", "MPA", "Suggested MPA", "VME"), 
+       col = c("grey", "black", "black", "black"), 
+       lty = c("solid", "solid", "dotted", NA), 
+       lwd = c(2, 2, 2, 2), 
+       pch = c(NA, NA, NA, 17), 
+       cex = 2, 
+       inset = c(0.05, 0.03))
+
+#example 2
+
+file_path <- "C:/xxx/turismopres.tif"
+turismopres<-stack(file_path)
+
+crs(turismopres)
+azores <- st_transform(ecp, crs(turismopres))
+ecp <- st_transform(ecp, crs(turismopres))
+conti <- st_transform(conti, crs(turismopres))
+madeira <- st_transform(madeira, crs(turismopres))
+conticlose <- st_transform(conticlose, crs(turismopres))
+
+plot(turismo24555, col=cols)
+plot(grat, add = TRUE, col = "white")
+north(xy="topleft", col = "black",type=2)
+scalebar_length <- 500  # 500 km
+scalebar_x <- ext(turismopres)[1] + 2
+scalebar_y <- ext(turismopres)[3] + 2
+lines(c(scalebar_x, scalebar_x + scalebar_length / 100), c(scalebar_y, scalebar_y), lwd = 2, col = "black")
+text(scalebar_x + scalebar_length / 200, scalebar_y + 0.8, paste0(scalebar_length, " km"), cex = 0.8)
+breaks <- seq(0, 1, length.out=100)
+addnortharrow(pos = "topleft", padin = c(0.1, 0.1), scale = 0.4, col = "black")
+north(xy="topleft", col = "black",type=2, cex=6)
+
+plot(azores, add = TRUE, col = "transparent", border = "white",lwd=2)
+plot(conticlose, add = TRUE, col = "transparent", border = "white",lwd=2)
+plot(madeira, add = TRUE, col = "transparent", border = "white", lwd=2)
+plot(conti, add = TRUE, col = "transparent", border = "white",lwd=2)
+
+contiturismopres<-mask(turismopres, conti)
+conticloseturismopres<-mask(turismopres, conticlose)
+madeiraturismopres<-mask(turismopres, madeira)
+azoresturismopres<-mask(turismopres, azores)
+ecpturismopres<-mask(turismopres, ecp)
+
+breaks <- seq(0, 1, length.out=100)
+
+plot(contiturismopres, col=cols)
+plot(conticloseturismopres, col=cols, add=TRUE)
+plot(madeiraturismopres, col=cols, add=TRUE)
+plot(azoresturismopres, col=cols, add=TRUE)
+plot(ecpturismopres, col=cols, add=TRUE)
+
+#References:
 
 Mikhailov, A., 2019. Turbo, an improved rainbow colormap for visualization. Google AI Blog, 10(15-16), p.8.
 

@@ -30,7 +30,7 @@ This study contributes to the emerging body of demonstration of the necessity of
 
 ## Requirements
 - R (version x.x.x or higher)
-- List of R packages required ('sdm', `dplyr`, `ggplot2`, 'terra', 'raster', 'rastervis', 'flexsdm', )
+- List of R packages required (`sdm`, `dplyr`, `ggplot2`, `terra`, `raster`, `rastervis`, `flexsdm`, )
 
 ---
 

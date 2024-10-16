@@ -17,7 +17,7 @@ This repository contains the data and R scripts used in the study "Projecting Ch
   2. **Environmental data processing**: Script for manipulating environmental data.
   3. **Species Distribution Modelling and Projections**: Script for species distribution modelling.
   4. **Model Outcome Visualizations**: Script for creating figures.
-- **Figures**: The figures produced and used in the manuscript can be found [here](xxx).
+- **Figures**: The figures produced and used in the manuscript can be found [here](https://figshare.com/account/home#/projects/219448).
 
 ## Abstract
 Keywords: Climate Change, Marine Spatial Planning, Species Distribution Modelling, Portugal

@@ -1,0 +1,88 @@
+library(flexsdm)
+#my data
+#env_layer:somevar
+#x: lon
+#y: lat
+#d: 1 km
+
+apply_filter <- function(df) {
+  filtered <- occfilt_geo(
+    data = df,
+    x = "lon",
+    y = "lat",
+    env_layer = somevar,
+    method = c("defined", d = "1"),
+    prj = crs(somevar)
+  )
+  return(filtered)}
+
+# Define a function to apply the filter to a list
+
+apply_filter_to_list <- function(lst) {
+  lapply(lst, apply_filter)
+}
+
+# Loop through the range from 1 to x, incrementing by 1 (to facilitate computation)
+for (i in seq(1, x, by = 1)) {
+  # Create the name of the new list
+  list_name <- paste0("list", i)
+  # Extract the individual data frames
+  individual_dfs_subset <- individual_dfs[i:(i)]
+  df_list <- split(dfsea, dfsea$species)
+  # Order the indices of df_list by the number of rows in each data frame
+  ordered_indices <- order(sapply(df_list, nrow))
+  # Reorder df_list based on the ordered indices (split into groups of data size, to geographically split up bigger datasets to handle)
+  df_list_ordered <- df_list[ordered_indices]
+  small_df_list <- lapply(df_list_ordered, function(df) {
+    if (nrow(df) <= 4500) {
+      return(df)
+    }
+  })
+  large_df_list <- lapply(df_list_ordered, function(df) {
+    if (nrow(df) > 4500) {
+      return(df)
+    }
+  })
+# Remove NULL elements from the lists
+small_df_list <- small_df_list[!sapply(small_df_list, is.null)]
+large_df_list <- large_df_list[!sapply(large_df_list, is.null)] 
+#apply occgeofilt to smaller list 
+filtered_small_df_list <- list()
+for (i in seq_along(quinzesmall_df_list )) {
+ filtered_small_df_list[[i]] <- apply_filter(mall_df_list [[i]])
+}
+
+
+# create a function for splitting big data into smaller geographically aggregated occurrences
+
+split_df_into_bins <- function(data, num_lat_bins, num_lon_bins) {
+  # Create latitude and longitude bins
+  lat_bins <- cut(data$lat, breaks = num_lat_bins, labels = FALSE)
+  lon_bins <- cut(data$lon, breaks = num_lon_bins, labels = FALSE)
+  # Create unique combinations of latitude and longitude bins
+  unique_bins <- paste(lat_bins, lon_bins, sep = "_")
+  # Split the data frame into parts based on unique bins
+  split_df <- split(data, unique_bins)
+  return(split_df)
+}
+
+# Define the number of latitude and longitude bins
+num_lat_bins <- 4 #or as many as needed to have handleable data
+num_lon_bins <- 4
+# Apply the splitting function to each data frame in large_df_list
+split_large_df_list <- lapply(large_df_list, split_df_into_bins)
+
+#apply occgeofilt to list 
+
+filtered_big_df_list <- list()
+for (i in seq_along(split_large_df_list  )) {
+ filtered_big_df_list[[i]] <- apply_filter(split_large_df_list  [[i]])
+}
+
+merged_list <- c(filtered_small_df_list, filtered_big_df_list)
+occgeo_filtered_merged_df <- bind_rows(Filter(function(x) inherits(x, "tbl_df"), merged_list))
+
+#to visualise filtered vs unfiltered data
+somevar[[1]] %>% plot(col = gray.colors(10))
+points(dfsea$lon, dfsea$lat,  col = "red")
+points(occgeo_filtered_merged_df$lon, occgeo_filtered_merged_df$lat, pch = 20, col = "green") 

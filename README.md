@@ -4,11 +4,12 @@
 - Elisabeth Julien* 
 - Joana Boavida-Portugal
 - Catarina Frazão dos Santos
+- Tiago A. Marques
 
 **Contact for this repository:** [elili.julien@gmail.com](mailto:elili.julien@gmail.com)
 
 ## Overview
-This repository contains the data and R scripts used in the study "Projecting Changes in Marine Biota to Support Climate Resilient Portuguese MSP". The final open access article can be found [here](xxx).
+This repository contains the data and R scripts used in the study "Projecting Changes in Marine Biota to Support Climate Resilient Portuguese MSP". The final open access article can be found [here](https://figshare.com/account/mycontent/projects/219448).
 
 ## Contents
 - **Data**: The data collected and used in this manuscript, along with all associated statistical analyses and figures, can be found [here](xxx).
@@ -17,19 +18,15 @@ This repository contains the data and R scripts used in the study "Projecting Ch
   2. **Environmental data processing**: Script for manipulating environmental data.
   3. **Species Distribution Modelling and Projections**: Script for species distribution modelling.
   4. **Model Outcome Visualizations**: Script for creating figures.
-- **Figures**: The figures produced and used in the manuscript can be found [here](https://figshare.com/account/home#/projects/219448).
+- **Figures**: The figures produced and used in the manuscript can be found [here]([https://figshare.com/account/home#/projects/219448](https://figshare.com/articles/dataset/SDM_projections_of_74_species_of_the_Portuguese_Sea/27083032)).
 
 ## Abstract
 Keywords: Climate Change, Marine Spatial Planning, Species Distribution Modelling, Portugal
 
-Climate-driven environmental changes in oceans are driving significant shifts in marine ecosystem distribution, composition and productivity, with far-reaching consequences for the services they support. Addressing and integrating climate effects in marine spatial planning (MSP) is needed to support ecosystem-based, forward-looking management processes. Modelling the impact of climate change to assess future scenarios constitutes an important first step in planning for climate-related vulnerabilities, risks, and opportunities.
-This study uses species distribution modelling (SDM) to project the effects of climate change on the distribution of habitat suitability (HS) for marine biota on which human uses and activities of the Portuguese MSP rely. Fisheries, aquaculture, conservation and tourism were identified as sectors of interest in this context. Models were fitted using an ensemble of eleven different statistical techniques for a total of seventy-two marine species associated to the chosen Portuguese MSP. The ensembles were run for present, mid-century and end-century scenarios, under representative climate scenarios SSP245 and SSP585.
-Results project loss of HS across all species modelled by mid and end-of-century scenarios, with significant variability in magnitude and direction across groups.  Analyses of projected HS across Portuguese maritime space (exclusive economic zone and extended continental platform) constitute a step towards planning effective, evidence-based climate-smart and ecosystem-based MSP opportunities in the Portuguese context. We highlight key threats, considerations to hold for the relevant sectors and spatial opportunities to support socioeconomic and ecological resilience, informing where to invest more research. Our results and methodologies are available open source (see github.com/elisabethjulien/SDM_for_MSP and and figshare.com/account/home#/projects/219448) for further data exploration. 
-This study contributes to the emerging body of demonstration of the necessity of climate-smart MSP, and how projecting future scenarios can prove an essential tool in effective planning to safeguard ecological functions, contributing towards social, political and environmental frameworks. 
-
+Human activities and climate change threaten ecosystem sustainability, affecting both wildlife and human populations. Integrating climate change knowledge into marine spatial planning (MSP) is necessary to support ecosystem-based, forward-looking management and develop climate resilience. Using species distribution models (SDMs), we project climate change effects on various Portuguese maritime uses, as a first assessment of climate resilience of Portuguese MSP. Seventy-two (highly diverse) marine species were selected as proxies for main human uses of the ocean (conservation, fisheries, aquaculture, tourism and recreation). Models were fitted with eleven statistical techniques and ensembles were run under two representative climate scenarios (SSP2-4.5 and SSP5-8.5). Models show drastic loss of habitat suitability across the Portuguese maritime area in the near future (2050s and 2090s). Our projections allow for preliminary identification of  key areas of interest for MSP in Portugal, from cross-sector risks to opportunities, and we suggest future directions to support the implementation of a climate-smart approach to Portuguese MSP.
 
 ## Requirements
-- R (version x.x.x or higher)
+- R 
 - List of R packages required (`sdm`, `dplyr`, `ggplot2`, `terra`, `raster`, `rastervis`, `flexsdm`, )
 
 ---

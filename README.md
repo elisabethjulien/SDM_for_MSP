@@ -9,16 +9,16 @@
 **Contact for this repository:** [elili.julien@gmail.com](mailto:elili.julien@gmail.com)
 
 ## Overview
-This repository contains the data and R scripts used in the study "Projecting Changes in Marine Biota to Support Climate Resilient Portuguese MSP". The final open access article can be found [here](https://figshare.com/account/mycontent/projects/219448).
+This repository contains the data and R scripts used in the study "Projecting Changes in Marine Biota to Support Climate Resilient Portuguese MSP". The final open access article can be found [here](xxx).
 
 ## Contents
-- **Data**: The data collected and used in this manuscript, along with all associated statistical analyses and figures, can be found [here](xxx).
+- **Data**: The data collected and used in this manuscript, along with all associated statistical analyses and figures, can be found [here](https://figshare.com/account/mycontent/projects/219448).
 - **R Scripts**: The R scripts used in this project are as follows:
   1. **Ecological data processing**: Script for manipulating species occurrence data.
   2. **Environmental data processing**: Script for manipulating environmental data.
   3. **Species Distribution Modelling and Projections**: Script for species distribution modelling.
   4. **Model Outcome Visualizations**: Script for creating figures.
-- **Figures**: The figures produced and used in the manuscript can be found [here]([https://figshare.com/account/home#/projects/219448](https://figshare.com/articles/dataset/SDM_projections_of_74_species_of_the_Portuguese_Sea/27083032)).
+
 
 ## Abstract
 Keywords: Climate Change, Marine Spatial Planning, Species Distribution Modelling, Portugal

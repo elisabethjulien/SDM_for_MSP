@@ -12,19 +12,19 @@ sdm_for_each_spp <- function(df) {
     if (distribution == "global") {
       if (water_colummn_use == "pelagic") {
         return(atlanticsurf)
-      } else if (water_use == "benthic") {
+      } else if (water_colummn_use == "benthic") {
         return(bentsurf)
       }
     } else if (distribution == "north atlantic") {
-      if (water_use == "pelagic") {
+      if (water_colummn_use == "pelagic") {
         return(northatlanticsurf)
-      } else if (water_use == "benthic") {
+      } else if (water_colummn_use == "benthic") {
         return(northatlanticbent)
       }
     } else if (distribution == "european") {
-      if (water_use == "pelagic") {
+      if (water_colummn_use == "pelagic") {
         return(eurosurf)
-      } else if (water_use == "benthic") {
+      } else if (water_colummn_use == "benthic") {
         return(eurobenth)
       }
     }
@@ -41,10 +41,10 @@ sdm_for_each_spp <- function(df) {
     species_df <- df[df$species == species, ]
     
     # Set predictors based on the conditions
-    water_use <- unique(species_df$`water use`)
+    water_colummn_use <- unique(species_df$`water use`)
     distribution <- unique(species_df$distribution)
     
-    predictors <- set_predictors(water_use, distribution)
+    predictors <- set_predictors(water_colummn_use, distribution)
     
     # Number of occurrences
     num_occurrences <- nrow(species_df)
@@ -79,9 +79,11 @@ sdm_for_each_spp <- function(df) {
 results <- sdm_for_each_spp(df)
 
 #Projections egs
+m_lamnas <- results[["Lamna nasus"]]
 lamnas_pres<-ensemble(m_lamnas,surfeez, filename= "/path/to/project/lamnaspres.tif", setting=list(method='weighted',stat="tss",op=2), parallelSetting = list(ncore=7, method='parallel',fork=F))
 lamnas_24525<-ensemble(m_lamnas,EEZsurf_245_55, filename= "/path/to/project/lamnas24525.tif", setting=list(method='weighted',stat="tss",op=2), parallelSetting = list(ncore=7, method='parallel',fork=F))
-lamnas_24535<-ensemble(m_lamnas,EEZsurf_585_55, filename= "C/path/to/project/lamnas24535.tif", setting=list(method='weighted',stat="tss",op=2), parallelSetting = list(ncore=7, method='parallel',fork=F))
+lamnas_24535<-ensemble(m_lamnas,EEZsurf_585_55, filename= "/path/to/project/lamnas24535.tif", setting=list(method='weighted',stat="tss",op=2), parallelSetting = list(ncore=7, method='parallel',fork=F))
 
 #next step wil be organising and visulising the results (see section 4)
+
 

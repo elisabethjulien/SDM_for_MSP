@@ -12,7 +12,7 @@
 This repository contains the data and R scripts used in the study "Projecting Changes in Marine Biota to Support Climate Resilient Portuguese MSP". The final open access article can be found [here](xxx).
 
 ## Contents
-- **Data**: The data collected and used in this manuscript, along with all associated statistical analyses and figures, can be found [here]([https://figshare.com/authors/elisabeth_julien/18788485]).
+- **Data**: The data collected and used in this manuscript, along with all associated statistical analyses and figures, can be found [here](https://figshare.com/authors/elisabeth_julien/18788485).
 - **R Scripts**: The R scripts used in this project are as follows:
   1. **Ecological data processing**: Script for manipulating species occurrence data.
   2. **Environmental data processing**: Script for manipulating environmental data.

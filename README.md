@@ -27,7 +27,7 @@ Human activities and climate change threaten ecosystem sustainability, affecting
 
 ## Requirements
 - R 
-- List of R packages required (`sdm`, `dplyr`, `ggplot2`, `terra`, `raster`, `rastervis`, `flexsdm`, )
+- List of R packages required (`sdm`, `dplyr`, `ggplot2`, `terra`, `raster`, `rastervis`, `flexsdm`, `dismo`, `rJava`)
 
 ---
 

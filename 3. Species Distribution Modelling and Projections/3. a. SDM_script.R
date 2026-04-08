@@ -84,6 +84,6 @@ lamnas_pres<-ensemble(m_lamnas,surfeez, filename= "/path/to/project/lamnaspres.t
 lamnas_24525<-ensemble(m_lamnas,EEZsurf_245_55, filename= "/path/to/project/lamnas24525.tif", setting=list(method='weighted',stat="tss",op=2), parallelSetting = list(ncore=7, method='parallel',fork=F))
 lamnas_24535<-ensemble(m_lamnas,EEZsurf_585_55, filename= "/path/to/project/lamnas24535.tif", setting=list(method='weighted',stat="tss",op=2), parallelSetting = list(ncore=7, method='parallel',fork=F))
 
-#next step wil be organising and visulising the results (see section 4)
+#next step wil be organising and visualising the results (see section 4)
 
 

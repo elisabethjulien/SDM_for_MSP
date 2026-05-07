@@ -497,3 +497,308 @@ terra::sbar(d = 500,           # distance in km
             col = "black",
             cex = 0.5)
 
+############TUNA ###################
+
+rescaled_raster_list <- lapply(rasterspres, rescale)
+
+thupres<-rescaled_raster_list[grep("^(thu|kat).*pres$", names(rescaled_raster_list), value = TRUE)]
+thupres<-rast(thupres)
+# Mean across layers
+thupres <- app(thupres, fun = mean, na.rm = TRUE)
+thupres<-rescale(thupres)
+extaz<-c(-37, -20, 33, 44)
+thupres<-crop(thupres, extaz)
+# Save the raster layer
+plot(thupres, col = viridis(10), colNA = "grey")
+terra::plot(thupres,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
+
+title(main = "a) Baseline scenario",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+
+plot(grat, add = TRUE, col = "grey")
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+
+northazmpa <- st_read("C:/Users/elili/Downloads/northazmpa.geojson")
+
+plot(northazmpa, add=TRUE, col ="red", lwd=1.5)
+
+plot(platcont, add = TRUE, col = "transparent", border = "grey",lwd=1.5)
+plot(az, add=TRUE, col ="white", lwd=1.5)
+
+labels_sub <- labels[labels$name == "Azores", ]
+labels_sub$lon <- -33
+for (i in seq_len(nrow(labels_sub))) {
+  w <- strwidth(labels_sub$name[i],  cex = 1) / 2 * 1.2
+  h <- strheight(labels_sub$name[i], cex = 1) / 2 * 1.5
+  
+  rect(labels_sub$lon[i] - w, labels_sub$lat[i] - h,
+       labels_sub$lon[i] + w, labels_sub$lat[i] + h,
+       col    = adjustcolor("white", alpha.f = 0.6),
+       border = NA)
+  
+  text(labels_sub$lon[i], labels_sub$lat[i], labels_sub$name[i],
+       cex = 1, font = 1, col = "black")
+}
+
+
+e <- ext(thupres)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+
+class(az)
+sf::st_write(az, "C:/Users/elili/Downloads/az.gpkg")
+
+####585#######585#########5##
+#-----------585-------------#
+####585#######585#########5##
+rescaled_raster_list <- lapply(rasters58555, rescale)
+
+thupres<-rescaled_raster_list[grep("^(thu|kat).*58555$", names(rescaled_raster_list), value = TRUE)]
+thupres<-rast(thupres)
+# Mean across layers
+thupres <- app(thupres, fun = mean, na.rm = TRUE)
+thupres<-rescale(thupres)
+extaz<-c(-37, -20, 33, 44)
+thupres<-crop(thupres, extaz)
+# Save the raster layer
+plot(thupres, col = viridis(10), colNA = "grey")
+terra::plot(thupres,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
+
+title(main = "b) 2050-2060s, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+
+plot(grat, add = TRUE, col = "grey")
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+
+northazmpa <- st_read("C:/Users/elili/Downloads/northazmpa.geojson")
+
+plot(northazmpa, add=TRUE, col ="red", lwd=1.5)
+
+plot(platcont, add = TRUE, col = "transparent", border = "grey",lwd=1.5)
+plot(az, add=TRUE, col ="white", lwd=1.5)
+
+labels_sub <- labels[labels$name == "Azores", ]
+labels_sub$lon <- -33
+for (i in seq_len(nrow(labels_sub))) {
+  w <- strwidth(labels_sub$name[i],  cex = 1) / 2 * 1.2
+  h <- strheight(labels_sub$name[i], cex = 1) / 2 * 1.5
+  
+  rect(labels_sub$lon[i] - w, labels_sub$lat[i] - h,
+       labels_sub$lon[i] + w, labels_sub$lat[i] + h,
+       col    = adjustcolor("white", alpha.f = 0.6),
+       border = NA)
+  
+  text(labels_sub$lon[i], labels_sub$lat[i], labels_sub$name[i],
+       cex = 1, font = 1, col = "black")
+}
+
+
+e <- ext(thupres)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+
+class(az)
+sf::st_write(az, "C:/Users/elili/Downloads/az.gpkg")
+
+####585#######585#########5##
+#-----------595-------------#
+####585#######585#########5##
+rescaled_raster_list <- lapply(rasters58595, rescale)
+
+thupres<-rescaled_raster_list[grep("^(thu|kat).*58595$", names(rescaled_raster_list), value = TRUE)]
+thupres<-rast(thupres)
+# Mean across layers
+thupres <- app(thupres, fun = mean, na.rm = TRUE)
+thupres<-rescale(thupres)
+extaz<-c(-37, -20, 33, 44)
+thupres<-crop(thupres, extaz)
+# Save the raster layer
+plot(thupres, col = viridis(10), colNA = "grey")
+terra::plot(thupres,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
+
+title(main = "c) 2090-2100s, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+
+plot(grat, add = TRUE, col = "grey")
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+
+northazmpa <- st_read("C:/Users/elili/Downloads/northazmpa.geojson")
+
+plot(northazmpa, add=TRUE, col ="red", lwd=1.5)
+
+plot(platcont, add = TRUE, col = "transparent", border = "grey",lwd=1.5)
+plot(az, add=TRUE, col ="white", lwd=1.5)
+
+labels_sub <- labels[labels$name == "Azores", ]
+labels_sub$lon <- -33
+for (i in seq_len(nrow(labels_sub))) {
+  w <- strwidth(labels_sub$name[i],  cex = 1) / 2 * 1.2
+  h <- strheight(labels_sub$name[i], cex = 1) / 2 * 1.5
+  
+  rect(labels_sub$lon[i] - w, labels_sub$lat[i] - h,
+       labels_sub$lon[i] + w, labels_sub$lat[i] + h,
+       col    = adjustcolor("white", alpha.f = 0.6),
+       border = NA)
+  
+  text(labels_sub$lon[i], labels_sub$lat[i], labels_sub$name[i],
+       cex = 1, font = 1, col = "black")
+}
+
+
+e <- ext(thupres)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+geom <- sf::st_geometry(high_sf)
+
+invisible(lapply(seq_along(geom), function(i) {
+  coords <- sf::st_coordinates(geom[i])
+  
+  split_id <- interaction(coords[, "L1"], coords[, "L2"], drop = TRUE)
+  
+  invisible(lapply(split(seq_len(nrow(coords)), split_id), function(idx) {
+    polygon(
+      coords[idx, "X"],
+      coords[idx, "Y"],
+      col     = adjustcolor("orange", alpha.f = 1),
+      border  = adjustcolor("grey95", alpha.f = 0.4),
+      density = 25,
+      angle   = 45,
+      lwd     = 1.5
+    )
+  }))
+}))

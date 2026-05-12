@@ -5,15 +5,35 @@ library(sf)
 library(terra)
 library(colorspace)
 library(maptools)
+library(sf)
 
-#loading a colour-blind friendly colour scale "turbo" (Mikhailov et al., 2019), appropriate and intuitive for habitat suitability mapping
-A<-c((0.18995),(0.19483),(0.19956),(0.20415),(0.2086),(0.21291),(0.21708),(0.22111),(0.225),(0.22875),(0.23236),(0.23582),(0.23915),(0.24234),(0.24539),(0.2483),(0.25107),(0.25369),(0.25618),(0.25853),(0.26074),(0.2628),(0.26473),(0.26652),(0.26816),(0.26967),(0.27103),(0.27226),(0.27334),(0.27429),(0.27509),(0.27576),(0.27628),(0.27667),(0.27691),(0.27701),(0.27698),(0.2768),(0.27648),(0.27603),(0.27543),(0.27469),(0.27381),(0.27273),(0.27106),(0.26878),(0.26592),(0.26252),(0.25862),(0.25425),(0.24946),(0.24427),(0.23874),(0.23288),(0.22676),(0.22039),(0.21382),(0.20708),(0.20021),(0.19326),(0.18625),(0.17923),(0.17223),(0.16529),(0.15844),(0.15173),(0.14519),(0.13886),(0.13278),(0.12698),(0.12151),(0.11639),(0.11167),(0.10738),(0.10357),(0.10026),(0.0975),(0.09532),(0.09377),(0.09287),(0.09267),(0.0932),(0.09451),(0.09662),(0.09958),(0.10342),(0.10815),(0.11374),(0.12014),(0.12733),(0.13526),(0.14391),(0.15323),(0.16319),(0.17377),(0.18491),(0.19659),(0.20877),(0.22142),(0.23449),(0.24797),(0.2618),(0.27597),(0.29042),(0.30513),(0.32006),(0.33517),(0.35043),(0.36581),(0.38127),(0.39678),(0.41229),(0.42778),(0.44321),(0.45854),(0.47375),(0.48879),(0.50362),(0.51822),(0.53255),(0.54658),(0.56026),(0.57357),(0.58646),(0.59891),(0.61088),(0.62233),(0.63323),(0.64362),(0.65394),(0.66428),(0.67462),(0.68494),(0.69525),(0.70553),(0.71577),(0.72596),(0.7361),(0.74617),(0.75617),(0.76608),(0.77591),(0.78563),(0.79524),(0.80473),(0.8141),(0.82333),(0.83241),(0.84133),(0.8501),(0.85868),(0.86709),(0.8753),(0.88331),(0.89112),(0.8987),(0.90605),(0.91317),(0.92004),(0.92666),(0.93301),(0.93909),(0.94489),(0.95039),(0.9556),(0.96049),(0.96507),(0.96931),(0.97323),(0.97679),(0.98),(0.98289),(0.98549),(0.98781),(0.98986),(0.99163),(0.99314),(0.99438),(0.99535),(0.99607),(0.99654),(0.99675),(0.99672),(0.99644),(0.99593),(0.99517),(0.99419),(0.99297),(0.99153),(0.98987),(0.98799),(0.9859),(0.9836),(0.98108),(0.97837),(0.97545),(0.97234),(0.96904),(0.96555),(0.96187),(0.95801),(0.95398),(0.94977),(0.94538),(0.94084),(0.93612),(0.93125),(0.92623),(0.92105),(0.91572),(0.91024),(0.90463),(0.89888),(0.89298),(0.88691),(0.88066),(0.87422),(0.8676),(0.86079),(0.8538),(0.84662),(0.83926),(0.83172),(0.82399),(0.81608),(0.80799),(0.79971),(0.79125),(0.7826),(0.77377),(0.76476),(0.75556),(0.74617),(0.73661),(0.72686),(0.71692),(0.7068),(0.6965),(0.68602),(0.67535),(0.66449),(0.65345),(0.64223),(0.63082),(0.61923),(0.60746),(0.5955),(0.58336),(0.57103),(0.55852),(0.54583),(0.53295),(0.51989),(0.50664),(0.49321),(0.4796))
-B<-c((0.07176),(0.08339),(0.09498),(0.10652),(0.11802),(0.12947),(0.14087),(0.15223),(0.16354),(0.17481),(0.18603),(0.1972),(0.20833),(0.21941),(0.23044),(0.24143),(0.25237),(0.26327),(0.27412),(0.28492),(0.29568),(0.30639),(0.31706),(0.32768),(0.33825),(0.34878),(0.35926),(0.3697),(0.38008),(0.39043),(0.40072),(0.41097),(0.42118),(0.43134),(0.44145),(0.45152),(0.46153),(0.47151),(0.48144),(0.49132),(0.50115),(0.51094),(0.52069),(0.5304),(0.54015),(0.54995),(0.55979),(0.56967),(0.57958),(0.5895),(0.59943),(0.60937),(0.61931),(0.62923),(0.63913),(0.64901),(0.65886),(0.66866),(0.67842),(0.68812),(0.69775),(0.70732),(0.7168),(0.7262),(0.73551),(0.74472),(0.75381),(0.76279),(0.77165),(0.78037),(0.78896),(0.7974),(0.80569),(0.81381),(0.82177),(0.82955),(0.83714),(0.84455),(0.85175),(0.85875),(0.86554),(0.87211),(0.87844),(0.88454),(0.8904),(0.896),(0.90142),(0.90673),(0.91193),(0.91701),(0.92197),(0.9268),(0.93151),(0.93609),(0.94053),(0.94484),(0.94901),(0.95304),(0.95692),(0.96065),(0.96423),(0.96765),(0.97092),(0.97403),(0.97697),(0.97974),(0.98234),(0.98477),(0.98702),(0.98909),(0.99098),(0.99268),(0.99419),(0.99551),(0.99663),(0.99755),(0.99828),(0.99879),(0.9991),(0.99919),(0.99907),(0.99873),(0.99817),(0.99739),(0.99638),(0.99514),(0.99366),(0.99195),(0.98999),(0.98775),(0.98524),(0.98246),(0.97941),(0.9761),(0.97255),(0.96875),(0.9647),(0.96043),(0.95593),(0.95121),(0.94627),(0.94113),(0.93579),(0.93025),(0.92452),(0.91861),(0.91253),(0.90627),(0.89986),(0.89328),(0.88655),(0.87968),(0.87267),(0.86553),(0.85826),(0.85087),(0.84337),(0.83576),(0.82806),(0.82025),(0.81236),(0.80439),(0.79634),(0.78823),(0.78005),(0.77181),(0.76352),(0.75519),(0.74682),(0.73842),(0.73),(0.7214),(0.7125),(0.7033),(0.69382),(0.68408),(0.67408),(0.66386),(0.65341),(0.64277),(0.63193),(0.62093),(0.60977),(0.59846),(0.58703),(0.57549),(0.56386),(0.55214),(0.54036),(0.52854),(0.51667),(0.50479),(0.49291),(0.48104),(0.4692),(0.4574),(0.44565),(0.43399),(0.42241),(0.41093),(0.39958),(0.38836),(0.37729),(0.36638),(0.35566),(0.34513),(0.33482),(0.32473),(0.31489),(0.3053),(0.29599),(0.28696),(0.27824),(0.26981),(0.26152),(0.25334),(0.24526),(0.2373),(0.22945),(0.2217),(0.21407),(0.20654),(0.19912),(0.19182),(0.18462),(0.17753),(0.17055),(0.16368),(0.15693),(0.15028),(0.14374),(0.13731),(0.13098),(0.12477),(0.11867),(0.11268),(0.1068),(0.10102),(0.09536),(0.0898),(0.08436),(0.07902),(0.0738),(0.06868),(0.06367),(0.05878),(0.05399),(0.04931),(0.04474),(0.04028),(0.03593),(0.03169),(0.02756),(0.02354),(0.01963),(0.01583))
-C<-c((0.23217),(0.26149),(0.29024),(0.31844),(0.34607),(0.37314),(0.39964),(0.42558),(0.45096),(0.47578),(0.50004),(0.52373),(0.54686),(0.56942),(0.59142),(0.61286),(0.63374),(0.65406),(0.67381),(0.693),(0.71162),(0.72968),(0.74718),(0.76412),(0.7805),(0.79631),(0.81156),(0.82624),(0.84037),(0.85393),(0.86692),(0.87936),(0.89123),(0.90254),(0.91328),(0.92347),(0.93309),(0.94214),(0.95064),(0.95857),(0.96594),(0.97275),(0.97899),(0.98461),(0.9893),(0.99303),(0.99583),(0.99773),(0.99876),(0.99896),(0.99835),(0.99697),(0.99485),(0.99202),(0.98851),(0.98436),(0.97959),(0.97423),(0.96833),(0.9619),(0.95498),(0.94761),(0.93981),(0.93161),(0.92305),(0.91416),(0.90496),(0.8955),(0.8858),(0.8759),(0.86581),(0.85559),(0.84525),(0.83484),(0.82437),(0.81389),(0.80342),(0.79299),(0.78264),(0.7724),(0.7623),(0.75237),(0.74265),(0.73316),(0.72393),(0.715),(0.70599),(0.69651),(0.6866),(0.67627),(0.66556),(0.65448),(0.64308),(0.63137),(0.61938),(0.60713),(0.59466),(0.58199),(0.56914),(0.55614),(0.54303),(0.52981),(0.51653),(0.50321),(0.48987),(0.47654),(0.46325),(0.45002),(0.43688),(0.42386),(0.41098),(0.39826),(0.38575),(0.37345),(0.3614),(0.34963),(0.33816),(0.32701),(0.31622),(0.30581),(0.29581),(0.28623),(0.27712),(0.26849),(0.26038),(0.2528),(0.24579),(0.23937),(0.23356),(0.22835),(0.2237),(0.2196),(0.21602),(0.21294),(0.21032),(0.20815),(0.2064),(0.20504),(0.20406),(0.20343),(0.20311),(0.2031),(0.20336),(0.20386),(0.20459),(0.20552),(0.20663),(0.20788),(0.20926),(0.21074),(0.2123),(0.21391),(0.21555),(0.21719),(0.2188),(0.22038),(0.22188),(0.22328),(0.22456),(0.2257),(0.22667),(0.22744),(0.228),(0.22831),(0.22836),(0.22811),(0.22754),(0.22663),(0.22536),(0.22369),(0.22161),(0.21918),(0.2165),(0.21358),(0.21043),(0.20706),(0.20348),(0.19971),(0.19577),(0.19165),(0.18738),(0.18297),(0.17842),(0.17376),(0.16899),(0.16412),(0.15918),(0.15417),(0.1491),(0.14398),(0.13883),(0.13367),(0.12849),(0.12332),(0.11817),(0.11305),(0.10797),(0.10294),(0.09798),(0.0931),(0.08831),(0.08362),(0.07905),(0.07461),(0.07031),(0.06616),(0.06218),(0.05837),(0.05475),(0.05134),(0.04814),(0.04516),(0.04243),(0.03993),(0.03753),(0.03521),(0.03297),(0.03082),(0.02875),(0.02677),(0.02487),(0.02305),(0.02131),(0.01966),(0.01809),(0.0166),(0.0152),(0.01387),(0.01264),(0.01148),(0.01041),(0.00942),(0.00851),(0.00769),(0.00695),(0.00629),(0.00571),(0.00522),(0.00481),(0.00449),(0.00424),(0.00408),(0.00401),(0.00401),(0.0041),(0.00427),(0.00453),(0.00486),(0.00529),(0.00579),(0.00638),(0.00705),(0.0078),(0.00863),(0.00955),(0.01055))
-turbo_colormap_data<-cbind(A,B,C) 
-turbo_colormap_data_sRGB<-sRGB(turbo_colormap_data)
-turbo_colormap_data_HEX = hex(turbo_colormap_data_sRGB)
-cols<-turbo_colormap_data_HEX
+# Base folder
+base_dir <- "D:/ELILI/thinkpad"
+
+# ---- Load all .geojson files (top-level folder only) ----
+geojson_files <- list.files(base_dir, pattern = "\\.geojson$", full.names = TRUE, recursive = TRUE)
+
+for (f in geojson_files) {
+  obj_name <- tools::file_path_sans_ext(basename(f))
+  assign(obj_name, st_read(f, quiet = TRUE), envir = .GlobalEnv)
+}
+
+# ---- Load all .shp files (recursive: includes subfolders) ----
+shp_files <- list.files(base_dir, pattern = "\\.shp$", full.names = TRUE, recursive = TRUE)
+
+for (f in shp_files) {
+  obj_name <- tools::file_path_sans_ext(basename(f))
+  assign(obj_name, st_read(f, quiet = TRUE), envir = .GlobalEnv)
+}
+
+ls()
+#load libraries for raster visulations 
+library(rasterVis)
+library(sp)
+library(sf)
+library(terra)
+library(colorspace)
+library(maptools)
 
 #creating a graticule to map 
 lon_lines <- vect(lapply(seq(-180, 180, by = 10), function(lon) {
@@ -25,162 +45,2195 @@ lat_lines <- vect(lapply(seq(-90, 90, by = 10), function(lat) {
 # Combine longitude and latitude lines into a single graticule object
 grat <- rbind(lon_lines, lat_lines)
 
-#loading shapefile objects downloaded from Portuguese MSP Geoportal https://webgis.dgrm.mm.gov.pt/portal/apps/webappviewer/index.html?id=df8accb510bc4f33963d9b03bf3674b8
-#shapefiles for areas of MPAs of different categories, different maritime territory limits, realised and potential aquaculture sites, offshore wind energy development were downloaded
-library(readr)
-#conservation objects
-file_path <- "C:/xxx/torremadeira.shp"
-torremadeira <- st_read(file_path)
-file_path <- "C:/xxx/altair.shp"
-altair <- st_read(file_path)
-file_path <- "C:/xxx/antialtair.shp"
-antialtair <- st_read(file_path)
-file_path <- "C:/xxx/altair.shp"
-altair <- st_read(file_path)
-file_path <- "C:/xxx/marna.shp"
-marna <- st_read(file_path)
-file_path <- "C:/xxx/greatmeteor.shp"
-greatmeteor <- st_read(file_path)
-madeira <- st_read("C:/xxx/madshape.shp")
-madeira_df <- as.data.frame(madeira, xy = TRUE)
-azores <- st_read("C:/xxx/acoresshape.shp")
-azores_df <- as.data.frame(azores, xy = TRUE)
-ecp <- st_read("C:/xxx/ecpshape.shp")
-ecp_df <- as.data.frame(ecp, xy = TRUE)
-#etc... 
-conti <- st_read("C:/Users/elili/Desktop/resULLTSUP/mspshp/contshape.shp")
-conti_df <- as.data.frame(conti, xy = TRUE)
-conticlose <- st_read("C:/Users/elili/Downloads/conticlose(homemade).geojson")
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/josephine.shp"
-josephine <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/arrabida.shp"
-arrabida <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/ospcol.shp"
-ospcol <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/ospcola.shp"
-ospcola <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/alenteo.shp"
-alenteo <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/faialpico.shp"
-faialpico <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/berlengas.shp"
-berlengas <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/naz.shp"
-naz <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/cabosaovi.shp"
-cabosaovi <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/fracturahayes.shp"
-fracturahayes <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/vulcoesdelama.shp"
-vulcoesdelama <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/bancovigo.shp"
-bancovigo <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/baiaarmacaodepera.shp"
-baiaarmacaodepera <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/amperecoral.shp"
-amperecoral <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/vmes.shp"
-vmes <- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/ecphope.shp"
-ecphope<- st_read(file_path)
-file_path <- "C:/Users/elili/Desktop/resULLTSUP/mspshp/TUPEM29032018.shp"
-tupem<- st_read(file_path)
+grat <- sf::st_graticule()
+plot(sf::st_geometry(grat), add = TRUE, col = "grey")
 
-#ok moving on to making a map
-#example
+# Folder path
+folder <- "C:/Users/elili/OneDrive/Desktop/npj/58555"
 
-library(sp)
-plot(con58595, col=cols)
-plot(grat, add = TRUE, col = "white")
-#crs(conpres) <- CRS("+proj=utm +zone=33 +datum=WGS84") # Set a CRS for the raster
-#azores <- st_transform(ecp, crs(conpres))
-#ecp <- st_transform(ecp, crs(conpres))
-#conti <- st_transform(conti, crs(conpres))
-#madeira <- st_transform(madeira, crs(conpres))
-#conticlose <- st_transform(conticlose, crs(conpres))
+# List all .tif files
+tif_files <- list.files(folder, pattern = "\\.tif$", full.names = TRUE)
 
-plot(azores, add = TRUE, col = "transparent", border = "grey",lwd=2)
-plot(ecp, add = TRUE, col = "transparent", border =  "grey",lwd=2)
-plot(conti, add = TRUE, col = "transparent", border =  "grey",lwd=2)
-plot(madeira, add = TRUE, col = "transparent", border =  "grey",lwd=2)
+# Load all files into a named list
+rasters58555 <- lapply(tif_files, rast)
+
+# Assign names based on original filenames (without extension)
+# Get base names without extension
+base_names <- tools::file_path_sans_ext(basename(tif_files))
+
+# Replace the ending with "58555"
+names(rasters58555) <- sub("\\d+$", "58555", base_names)
+
+# Check result
+rasters58555
+
+#58595
+
+
+# Folder path
+folder <- "C:/Users/elili/OneDrive/Desktop/npj/58595"
+
+# List all .tif files
+tif_files <- list.files(folder, pattern = "\\.tif$", full.names = TRUE)
+
+# Load all files into a named list
+rasters58595 <- lapply(tif_files, rast)
+
+# Assign names based on original filenames (without extension)
+# Get base names without extension
+base_names <- tools::file_path_sans_ext(basename(tif_files))
+
+# Replace the ending with "58555"
+names(rasters58595) <- sub("\\d+$", "58595", base_names)
+
+# Check result
+rasters58595
+
+
+#pres
+
+
+# Folder path
+folder <- "C:/Users/elili/OneDrive/Desktop/npj/pres"
+
+# List all .tif files
+tif_files <- list.files(folder, pattern = "\\.tif$", full.names = TRUE)
+
+# Load all files into a named list
+rasterspres <- lapply(tif_files, rast)
+
+
+# Assign names based on original filenames (without extension)
+# Get base names without extension
+base_names <- tools::file_path_sans_ext(basename(tif_files))
+
+# Replace the ending with "58555"
+names(rasterspres) <- sub("\\d+$", "pres", base_names)
+
+# Check result
+rasterspres
+
+
+library(viridis)
+library(terra)
+library(geodata)
+
+rasterpres<- rast(rasterspres)
+rasterpres_stack <- terra::rast(rasterpres)
+
+
+rescale <- function(raster_layer) {
+  # Get min/max
+  minmax_r <- range(values(raster_layer), na.rm = TRUE)
+  
+  # Rescale between 0 and 1
+  rescaled_values <- (raster_layer - minmax_r[1]) / diff(minmax_r)
+  
+  return(rescaled_values)
+}
+
+# Apply to all rasters in the list
+rescaled_raster_list <- lapply(rasterspres, rescale)
+
+rasterpres<-rast(rescaled_raster_list)
+
+
+# Mean across layers
+rasterpres <- app(rasterpres, fun = mean, na.rm = TRUE)
+
+plot(rasterpres, col = rocket(10), colNA = "grey")
+
+plot(rasterpres, col = viridis(10), colNA = "grey")
+terra::plot(rasterpres,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
+
+title(main = "b) Baseline scenario",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+portugal <- geodata::gadm(country = "PRT", level = 0, path = tempdir())
+
+portugal_utm <- project(portugal, crs(rasterspres))
+
+plot(grat, add = TRUE, col = "grey")
+
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+plot(platcont, add = TRUE, col = "transparent", border = "white",lwd=1.5)
+plot(zeemad, add=TRUE, col ="white", lwd=1.5)
+plot(zeeacores, add=TRUE, col ="white", lwd=1.5)
+plot(zeecont, add=TRUE, col ="white", lwd=1.5)
+
+labels <- data.frame(
+  name = c("Portugal", "Azores", "Madeira", "ECP"),
+  lon = c(-11, -27.2, -21, -32),
+  lat = c(42.5, 41, 30, 44.5)
+)
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+
+e <- ext(rasterpres)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+
+
+#############################################
+#-----------------58555---------------------8#
+###########8#8888888888888888888888888###########
+rescaled_raster_list <- lapply(rasters58555, rescale)
+
+
+rasters58555<-rast(rescaled_raster_list)
+library(terra)
+
+# Mean across layers
+raster55 <- app(rasters58555, fun = mean, na.rm = TRUE)
+diff55 <- raster55 -rasterpres
+
+plot(raster55, col = rocket(10), colNA = "grey")
+
+plot(raster55, col = viridis(10), colNA = "grey")
+
+
+terra::plot(raster55,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
+
+title(main = "b) 2050-2060s, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+portugal <- geodata::gadm(country = "PRT", level = 0, path = tempdir())
+
+portugal_utm <- project(portugal, crs(r_crop))
+
+
+
+plot(grat, add = TRUE, col = "grey")
+
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+plot(platcont, add = TRUE, col = "transparent", border = "white",lwd=1.5)
+plot(mad, add=TRUE, col ="white", lwd=1.5)
+plot(az, add=TRUE, col ="white", lwd=1.5)
+plot(cont, add=TRUE, col ="white", lwd=1.5)
+
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+
+e <- ext(raster55)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+
+##########################
+######------diff-----#####
+##########################
+
+diff55 <- raster55 -rasterpres
+
+
+terra::plot(diff55,
+            col     = colorRampPalette(c("orange", "white", "blue"))(10),
+            colNA   = "grey",
+            range   = c(-1, 1),
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+
+title(main = "c) Δ baseline to 2050-2060, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+portugal <- geodata::gadm(country = "PRT", level = 0, path = tempdir())
+
+portugal_utm <- project(portugal, crs(r_crop))
+
+
+
+plot(grat, add = TRUE, col = "grey")
+
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+plot(platcont, add = TRUE, col = "transparent", border = "grey80",lwd=1.5)
+plot(zeemad, add=TRUE, col ="grey80", lwd=1.5)
+plot(zeeacores, add=TRUE, col ="grey80", lwd=1.5)
+plot(zeecont, add=TRUE, col ="grey80", lwd=1.5)
+
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+
+e <- ext(raster55)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+
+
+#############################################
+#-----------------58595---------------------8#
+###########8#8888888888888888888888888###########
+rescaled_raster_list <- lapply(rasters58595, rescale)
+
+
+rasters58595<-rast(rescaled_raster_list)
+library(terra)
+
+# Mean across layers
+raster95 <- app(rasters58595, fun = mean, na.rm = TRUE)
+diff95 <- raster95 -rasterpres
+plot(raster95, col = rocket(10), colNA = "grey")
+
+plot(raster95, col = viridis(10), colNA = "grey")
+
+diff95 <- raster95 -rasterpreso
+
+terra::plot(raster95,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
+
+title(main = "c) 2090-2100s, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+portugal <- geodata::gadm(country = "PRT", level = 0, path = tempdir())
+
+portugal_utm <- project(portugal, crs(r_crop))
+
+
+
+plot(grat, add = TRUE, col = "grey")
+
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+plot(platcont, add = TRUE, col = "transparent", border = "white",lwd=1.5)
+plot(mad, add=TRUE, col ="white", lwd=1.5)
+plot(az, add=TRUE, col ="white", lwd=1.5)
+plot(cont, add=TRUE, col ="white", lwd=1.5)
+
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+
+e <- ext(raster55)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+##########################
+######------diff-----#####
+##########################
+
+diff95 <- raster95 -rasterpres
+install.packages("plg")
+library(plg)
+
+brks <- seq(-1, 1, length.out = 11)
+brks <- seq(-1, 1, length.out = 11)
+
+terra::plot(diff95,
+            col     = colorRampPalette(c("orange", "white", "blue"))(10),
+            colNA   = "grey",
+            range   = c(-1, 1),
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+
+
+title(main = "d) Δ baseline to 2090-2100, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+portugal <- geodata::gadm(country = "PRT", level = 0, path = tempdir())
+
+portugal_utm <- project(portugal, crs(r_crop))
+
+
+
+plot(grat, add = TRUE, col = "grey")
+
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+plot(platcont, add = TRUE, col = "transparent", border = "grey80",lwd=1.5)
+plot(zeemad, add=TRUE, col ="grey80", lwd=1.5)
+plot(zeeacores, add=TRUE, col ="grey80", lwd=1.5)
+plot(zeecont, add=TRUE, col ="grey80", lwd=1.5)
+
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+
+e <- ext(raster55)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+#88888888888888888888888#
+#####zoomed out map######
+#888888888888888888888888#
+
+library(terra)
+
+nc <- "C:/Users/elili/OneDrive/Desktop/smallpel/env/terrain_characteristics_6d78_4f59_9e1f_U1763910908420.nc"
+nc
+r <- rast(nc)
+r
+ext <- ext(-50, 12, 20, 65)
+r_crop <- crop(r, ext)
+
+plot(r_crop, col="lightblue", colNA="grey", legend=FALSE)
+plot(sf::st_geometry(grat), add = TRUE, col = "grey")
+
+
+plot(r_crop, 
+     col    = colorRampPalette(c("#0a3d6b", "#1a6fa8", "#5ba4c7", "#a8d5e2", "#d0e8f0"))(100),
+     colNA  = "grey",
+     legend = FALSE)
+
+plot(grat, add=TRUE, col="grey80")
+
+
+text(-34, 22, "Atlantic Ocean",
+     cex  = 1.4,
+     col  = adjustcolor("white", alpha.f = 0.3),
+     font = 3)  # font=3 is italic, classic for ocean labels
+
+
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     
+     lwd = 1.2)
+
+# Create a mask of NA areas as polygons
+na_mask <- terra::ifel(is.na(r_crop), 1, NA)
+na_poly <- terra::as.polygons(na_mask, dissolve = TRUE)
+na_sf   <- sf::st_as_sf(na_poly)
+
+# Plot
+plot(sf::st_geometry(na_sf), add = TRUE,
+     col    = NA,
+     border = "grey40",   # one shade darker than #d9d4c7
+     lwd    = 0.5)
+
+
+# Europe label
+text(6.5, 47, "Europe",
+     cex = 1.1,
+     col = adjustcolor("grey50", alpha.f = 0.4),
+     font = 3)
+
+
+portugal_utm
+
+plot(portugal_utm, add = TRUE,
+     col    = adjustcolor("lightblue4", alpha.f = 0.2),
+     border = "lightblue4", lwd = 1.5, alpha.f = 0.3)
+
+plot(platcont, add = TRUE,
+     col    = adjustcolor("lightblue2", alpha.f = 0.2),
+     border = "lightblue1", lwd = 1.5, alpha.f = 0.3)
+
+
+to_poly <- function(x) {
+  p <- sf::st_polygonize(sf::st_union(x))
+  sf::st_collection_extract(p, "POLYGON")
+}
+
+az_poly   <- to_poly(zeeacores)
+cont_poly <- to_poly(zeecont)
+
+mad_poly <- sf::st_polygonize(sf::st_union(sf::st_combine(zeemad)))
+mad_poly <- sf::st_collection_extract(mad_poly, "POLYGON")
+sf::st_is_valid(sf::st_union(sf::st_combine(zeemad)))
+mad_poly <- sf::st_convex_hull(sf::st_union(zeemad))
+
+plot(mad_poly, add = TRUE,
+     col    = adjustcolor("lightblue4", alpha.f = 0.2),
+     border = "lightblue1", lwd = 1.5, alpha.f = 0.3)
+
+plot(az_poly, add = TRUE,
+     col    = adjustcolor("lightblue4", alpha.f = 0.2),
+     border = "lightblue1", lwd = 1.5, alpha.f = 0.3)
+
+plot(cont_poly, add = TRUE,
+     col    = adjustcolor("lightblue4", alpha.f = 0.2),
+     border = "lightblue1", lwd = 1.5, alpha.f = 0.3)
+
+mad
+
+text(-9,  43.3, "Portugal",       cex = 0.7, col = "grey25", font = 3)
+text(-35, 45.4,   "Portuguese\nECP and EEZs",             cex = 0.7, col = "grey25", font = 3)
+
+
+
+
+
+
+e <- ext(r_crop)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 1.5
+box_right  <- arrow_x + 1.5
+box_bottom <- arrow_y - 5.5  # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.8, ),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.1, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 4,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 1000,           # distance in km
+            xy = "bottomright", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+bbox_poly <- sf::st_as_sfc(sf::st_bbox(c(xmin = -43, xmax = -5,
+                                         ymin = 28,  ymax = 50),
+                                       crs = sf::st_crs(4326)))
+
+plot(bbox_poly, add    = TRUE,
+     col    = "transparent",
+     border = "#FDE725", alpha.f = 0.3,
+     lwd    = 1.2)
+
+
+
+# Add white background box to Portugal and ECP text labels too
+text_labels <- data.frame(
+  name = c("Portugal", "Portuguese\nECP and EEZs"),
+  lon  = c(-9, -35),
+  lat  = c(43.3, 45.4)
+)
+
+
+for (i in seq_len(nrow(text_labels))) {
+  w <- strwidth(text_labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(text_labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(text_labels$lon[i] - w, text_labels$lat[i] - h,
+       text_labels$lon[i] + w, text_labels$lat[i] + h,
+       col    = adjustcolor("white", alpha.f = 0.6),
+       border = NA)
+  
+  text(text_labels$lon[i], text_labels$lat[i], text_labels$name[i],
+       cex = 0.8, font = 3, col = "grey25")
+}
+
+
+
+title(main = "a) Geographic context",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)   
+
+
+
+
+
+
+
+
+################turismo###############
+########################################
+###################################
+
+rescaled_raster_list <- lapply(rasterspres, rescale)
+
+rasterpres<-rast(rescaled_raster_list)
+
+
+# Mean across layers
+rasterpres <- app(rasterpres, fun = mean, na.rm = TRUE)
+
+
+tourism_species <- c(
+  # Fish
+  "acasol",   # Acanthocybium solandri
+  "corhip",   # Coryphaena hippurus
+  "katpel",   # Katsuwonus pelamis
+  "maknig",   # Makaira nigricans
+  "sphbar",   # Sphyraena barracuda
+  "xipgla",   # Xiphias gladius
+  
+  # Marine mammals
+  "balacu",   # Balaenoptera acutorostrata
+  "balbor",   # Balaenoptera borealis
+  "balmus",   # Balaenoptera musculus
+  "balphy",   # Balaenoptera physalus
+  "deldel",   # Delphinus delphis
+  "eubgla",   # Eubalaena glacialis
+  "glomac",   # Globicephala macrorhynchus
+  "gragri",   # Grampus griseus
+  "megnov",   # Megaptera novaeangliae
+  "orcorc",   # Orcinus orca
+  "phymac",   # Physeter macrocephalus
+  "psecra",   # Pseudorca crassidens
+  "stecor",   # Stenella coeruleoalba
+  "stefro",   # Stenella frontalis
+  "turtru",   # Tursiops truncatus
+  "zipcav"
+)
+
+turismopres <- rescaled_raster_list[
+  names(rescaled_raster_list) %in%
+    paste0(tourism_species, "pres")
+]
+
+turismopres<-rast(turismopres)
+# Mean across layers
+turismopres <- app(turismopres, fun = mean, na.rm = TRUE)
+terra::plot(turismopres,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
+
+title(main = "a) Baseline scenario",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+plot(grat, add = TRUE, col = "grey")
+
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+
+
+plot(platcont, add = TRUE, col = "transparent", border = "white",lwd=1.5)
+plot(zeemad, add=TRUE, col ="white", lwd=1.5)
+plot(zeeacores, add=TRUE, col ="white", lwd=1.5)
+plot(zeecont, add=TRUE, col ="white", lwd=1.5)
+
+labels <- data.frame(
+  name = c("Portugal", "Azores", "Madeira", "ECP"),
+  lon = c(-11, -27.2, -21, -32),
+  lat = c(42.5, 41, 30, 44.5)
+)
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+e <- ext(turismopres)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+
+####585#######585#########5##
+#-----------585-------------#
+####585#######585#########5##
+rescaled_raster_list <- lapply(rasters58555, rescale)
+
+turismo58555 <- rescaled_raster_list[
+  names(rescaled_raster_list) %in%
+    paste0(tourism_species, "58555")
+]
+turismo58555<-rast(turismo58555)
+# Mean across layers
+turismo58555 <- app(turismo58555, fun = mean, na.rm = TRUE)
+turismo58555<-rescale(turismo58555)
+diff55 <- turismo58555 -turismopres
+
+terra::plot(diff55,
+            col     = magma(10),
+            colNA   = "grey",
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+terra::plot(diff55,
+            col     = colorRampPalette(c("orange", "white","blue"))(10),
+            colNA   = "grey",
+            range   = c(-1, 1),          # forces legend extent
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+title(main = "b) Δ baseline to 2050-2060, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+portugal <- geodata::gadm(country = "PRT", level = 0, path = tempdir())
+
+portugal_utm <- project(portugal, crs(r_crop))
+
+plot(grat, add = TRUE, col = "grey")
+
+plot(portugal_utm, add = TRUE,
+     border = "black",
+     lwd = 1.2)
+plot(platcont, add = TRUE, col = "transparent", border = "grey80",lwd=1.5)
+plot(zeemad, add=TRUE, col ="grey80", lwd=1.5)
+plot(zeeacores, add=TRUE, col ="grey80", lwd=1.5)
+plot(zeecont, add=TRUE, col ="grey80", lwd=1.5)
+
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+e <- ext(turismopres)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+
+
+####585#######585#########5##
+#-----------585-------------#
+####585#######585#########5##
+rescaled_raster_list <- lapply(rasters58595, rescale)
+
+turismo58595 <- rescaled_raster_list[
+  names(rescaled_raster_list) %in%
+    paste0(tourism_species, "58595")
+]
+
+turismo58595<-rast(turismo58595)
+# Mean across layers
+turismo58595 <- app(turismo58595, fun = mean, na.rm = TRUE)
+turismo58595<-rescale(turismo58595)
+diff95 <- turismo58595 -turismopres
+
+terra::plot(diff95,
+            col     = magma(10),
+            colNA   = "grey",
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+terra::plot(diff95,
+            col     = colorRampPalette(c("orange", "white","blue"))(10),
+            colNA   = "grey",
+            range   = c(-1, 1),          # forces legend extent
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+title(main = "c) Δ baseline to 2090-2100, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+portugal <- geodata::gadm(country = "PRT", level = 0, path = tempdir())
+
+portugal_utm <- project(portugal, crs(r_crop))
+
+plot(grat, add = TRUE, col = "grey")
+
+plot(portugal_utm, add = TRUE,
+     border = "black",
+     lwd = 1.2)
+plot(platcont, add = TRUE, col = "transparent", border = "grey80",lwd=1.5)
+plot(zeemad, add=TRUE, col ="grey80", lwd=1.5)
+plot(zeeacores, add=TRUE, col ="grey80", lwd=1.5)
+plot(zeecont, add=TRUE, col ="grey80", lwd=1.5)
+
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+e <- ext(turismopres)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+
+####585#######585#########5##
+#-----------595-------------#
+####585#######585#########5##
+rescaled_raster_list <- lapply(rasters58595, rescale)
+
+turismo58595<-rescaled_raster_list[grep("^(decpun|diclab|engenc|katpel|loppis|pagbog|sarpil|scosco|solsol|spaaur|thuala|thualb|thuobe|thuthy|tratra|zeufab|lolvul|octvul|palser).*58595$", names(rescaled_raster_list), value = TRUE)]
+turismo58595<-rast(turismo58595)
+# Mean across layers
+turismo58595 <- app(turismo58595, fun = mean, na.rm = TRUE)
+turismo58595<-rescale(turismo58595)
+diff95 <- turismo58595 -turismopres
+
+terra::plot(diff95,
+            col     = magma(10),
+            colNA   = "grey",
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+title(main = "c) Δ baseline to 2090-2100s, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+portugal <- geodata::gadm(country = "PRT", level = 0, path = tempdir())
+
+portugal_utm <- project(portugal, crs(r_crop))
+
+plot(grat, add = TRUE, col = "grey")
+
+plot(portugal_utm, add = TRUE,
+     border = "black",
+     lwd = 1.2)
+plot(platcont, add = TRUE, col = "transparent", border = "white",lwd=1.5)
+plot(mad, add=TRUE, col ="white", lwd=1.5)
+plot(az, add=TRUE, col ="white", lwd=1.5)
+plot(cont, add=TRUE, col ="white", lwd=1.5)
+
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+e <- ext(turismopres)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+#######################################
+#######################################
+#######aqua#########################
+
+rescaled_raster_list <- lapply(rasterspres, rescale)
+aquaculture_pattern <- "^(diclab|scomax|serdum|spaaur|mytgal|ostedu|ruddec|vencor|polpol).*pres$"
+rescaled_raster_list
+aquapres<-rescaled_raster_list[grep("^(diclab|scomax|serdum|spaaur|mytgal|ostedu|ruddec|vencor|polpol).*pres$", names(rescaled_raster_list), value = TRUE)]
+aquapres
+
+aquapres<-rast(aquapres)
+# Mean across layers
+aquapres <- app(aquapres, fun = mean, na.rm = TRUE)
+aquapres<-rescale(aquapres)
+
+aquaext<-ext(-11.5, -6, 36, 42.5)
+aquapres<-crop(aquapres, aquaext)
+
+terra::plot(aquapres,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
+
+
+# Create a mask of NA areas as polygons
+na_mask <- terra::ifel(is.na(aquapres), 1, NA)
+na_poly <- terra::as.polygons(na_mask, dissolve = TRUE)
+na_sf   <- sf::st_as_sf(na_poly)
+
+# Plot
+plot(sf::st_geometry(na_sf), add = TRUE,
+     col    = NA,
+     border = "grey40",   # one shade darker than #d9d4c7
+     lwd    = 0.8)
+
+
+title(main = "a) Baseline scenario",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+grat <- sf::st_graticule()
+
+plot(grat, add = TRUE, col = "grey80")
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+
+
+plot(zeecont, add = TRUE, col = "transparent", border = "grey",lwd=1.5)
+
+ls()
+plot(winffloat, add = TRUE, col = "purple", border = "darkgrey", lwd = 2, pch = 17)
+plot(potentialrenewableeenergy, add=TRUE, col="transparent",border="yellow", lwd=1.5, pch = 17)
+plot(berlengas, add=TRUE, col="purple", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="purple", lwd=1.5)
+plot(arrabida, add=TRUE, col="purple", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(alenteo, add=TRUE, col="purple", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(aqui06052016DGRM, add = TRUE, col = "white", border = "red", lwd = 6, pch = 22)
+plot(arrabida, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(pescalg, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(bancovigo, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(areaspotenciaisaquicola, add=TRUE, col="transparent",border="orange", lwd=6)
+plot(kings, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="purple", lwd=1.5)
+
+plot(vmes, add=TRUE, col="white", lwd=1.5)
+plot(josephine, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(berlengas, add=TRUE, col="white", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(alenteo, add=TRUE, col="white", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(greatmeteor, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(fracturahayes, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(bancovigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(kings, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="white", lwd=1.5)
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+e <- ext(aquapres)
+
+x_range <- e[2] - e[1]
+y_range <- e[4] - e[3]
+
+# Position (near top-left)
+arrow_x <- e[1] + 0.05 * x_range
+arrow_y <- e[4] - 0.03 * y_range
+
+# Arrow length (scaled to map, not fixed numbers)
+arrow_len <- 0.08 * y_range
+
+# Box padding
+pad_x <- 0.02 * x_range
+pad_y <- 0.02 * y_range
+
+# Rectangle around arrow + label
+box_left   <- arrow_x - pad_x
+box_right  <- arrow_x + 0.07 * x_range
+box_bottom <- arrow_y - arrow_len - pad_y -0.3
+box_top    <- arrow_y + pad_y
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.5),
+     border = NA)
+
+# North arrow
+arrows(arrow_x, arrow_y - arrow_len,
+       arrow_x, arrow_y,
+       length = 0.05, lwd = 2, col = "black")
+
+# Label
+text(arrow_x, arrow_y - 0.1 * y_range,
+     "N", font = 2, cex = 0.9, col = "black")
+
+
+terra::sbar(d = 100,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+#######585#########
+###################
+##################
+rescaled_raster_list <- lapply(rasters58555, rescale)
+
+aqua58555<-rescaled_raster_list[grep("^(diclab|scomax|serdum|spaaur|mytgal|ostedu|ruddec|vencor|polpol).*58555$", names(rescaled_raster_list), value = TRUE)]
+aqua58555
+
+aqua58555<-rast(aqua58555)
+# Mean across layers
+aqua58555 <- app(aqua58555, fun = mean, na.rm = TRUE)
+aqua58555<-rescale(aqua58555)
+
+aquaext<-ext(-11.5, -6, 36, 42.5)
+aqua58555<-crop(aqua58555, aquaext)
+
+aquadif55<-aqua58555-aquapres
+
+terra::plot(aquadif55,
+            col     = colorRampPalette(c("orange", "white","blue"))(10),
+            colNA   = "grey",
+            range   = c(-1, 1),          # forces legend extent
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+# Create a mask of NA areas as polygons
+na_mask <- terra::ifel(is.na(aquapres), 1, NA)
+na_poly <- terra::as.polygons(na_mask, dissolve = TRUE)
+na_sf   <- sf::st_as_sf(na_poly)
+
+# Plot
+plot(sf::st_geometry(na_sf), add = TRUE,
+     col    = NA,
+     border = "grey40",   # one shade darker than #d9d4c7
+     lwd    = 0.8)
+
+
+title(main = "b) Δ baseline to 2050-2060, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+grat <- sf::st_graticule()
+
+plot(grat, add = TRUE, col = "grey80")
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+
+
+plot(zeecont, add = TRUE, col = "transparent", border = "grey",lwd=1.5)
+
+ls()
+plot(winffloat, add = TRUE, col = "purple", border = "darkgrey", lwd = 2, pch = 17)
+plot(potentialrenewableeenergy, add=TRUE, col="transparent",border="yellow", lwd=1.5, pch = 17)
+plot(berlengas, add=TRUE, col="purple", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="purple", lwd=1.5)
+plot(arrabida, add=TRUE, col="purple", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(alenteo, add=TRUE, col="purple", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(aqui06052016DGRM, add = TRUE, col = "white", border = "red", lwd = 6, pch = 22)
+plot(arrabida, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(pescalg, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(bancovigo, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(areaspotenciaisaquicola, add=TRUE, col="transparent",border="white", lwd=6)
+plot(kings, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="purple", lwd=1.5)
+
+plot(vmes, add=TRUE, col="white", lwd=1.5)
+plot(josephine, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(berlengas, add=TRUE, col="white", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(alenteo, add=TRUE, col="white", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(greatmeteor, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(fracturahayes, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(bancovigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(kings, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="white", lwd=1.5)
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+e <- ext(aquapres)
+
+x_range <- e[2] - e[1]
+y_range <- e[4] - e[3]
+
+# Position (near top-left)
+arrow_x <- e[1] + 0.05 * x_range
+arrow_y <- e[4] - 0.03 * y_range
+
+# Arrow length (scaled to map, not fixed numbers)
+arrow_len <- 0.08 * y_range
+
+# Box padding
+pad_x <- 0.02 * x_range
+pad_y <- 0.02 * y_range
+
+# Rectangle around arrow + label
+box_left   <- arrow_x - pad_x
+box_right  <- arrow_x + 0.07 * x_range
+box_bottom <- arrow_y - arrow_len - pad_y -0.3
+box_top    <- arrow_y + pad_y
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.5),
+     border = NA)
+
+# North arrow
+arrows(arrow_x, arrow_y - arrow_len,
+       arrow_x, arrow_y,
+       length = 0.05, lwd = 2, col = "black")
+
+# Label
+text(arrow_x, arrow_y - 0.1 * y_range,
+     "N", font = 2, cex = 0.9, col = "black")
+
+
+terra::sbar(d = 100,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+
+#######585#########
+###################
+##################
+rescaled_raster_list <- lapply(rasters58595, rescale)
+
+aqua58595<-rescaled_raster_list[grep("^(diclab|scomax|serdum|spaaur|mytgal|ostedu|ruddec|vencor|polpol).*58595$", names(rescaled_raster_list), value = TRUE)]
+
+
+aqua58595<-rast(aqua58595)
+# Mean across layers
+aqua58595 <- app(aqua58595, fun = mean, na.rm = TRUE)
+aqua58595<-rescale(aqua58595)
+plot(aqua58595)
+aquaext<-ext(-11.5, -6, 36, 42.5)
+aqua58595<-crop(aqua58595, aquaext)
+
+aquadif95<-aqua58595-aquapres
+
+terra::plot(aquadif95,
+            col     = colorRampPalette(c("orange", "white","blue"))(10),
+            colNA   = "grey",
+            range   = c(-1, 1),          # forces legend extent
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+# Create a mask of NA areas as polygons
+na_mask <- terra::ifel(is.na(aquapres), 1, NA)
+na_poly <- terra::as.polygons(na_mask, dissolve = TRUE)
+na_sf   <- sf::st_as_sf(na_poly)
+
+# Plot
+plot(sf::st_geometry(na_sf), add = TRUE,
+     col    = NA,
+     border = "grey40",   # one shade darker than #d9d4c7
+     lwd    = 0.8)
+
+
+title(main = "c) Δ baseline to 2090-2100, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+grat <- sf::st_graticule()
+
+plot(grat, add = TRUE, col = "grey80")
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+
+
+plot(zeecont, add = TRUE, col = "transparent", border = "grey",lwd=1.5)
+
+ls()
+plot(winffloat, add = TRUE, col = "purple", border = "darkgrey", lwd = 2, pch = 17)
+plot(potentialrenewableeenergy, add=TRUE, col="transparent",border="yellow", lwd=1.5, pch = 17)
+plot(berlengas, add=TRUE, col="purple", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="purple", lwd=1.5)
+plot(arrabida, add=TRUE, col="purple", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(alenteo, add=TRUE, col="purple", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(aqui06052016DGRM, add = TRUE, col = "white", border = "red", lwd = 6, pch = 22)
+plot(arrabida, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(pescalg, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(bancovigo, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(areaspotenciaisaquicola, add=TRUE, col="transparent",border="white", lwd=6)
+plot(kings, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="purple", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="purple", lwd=1.5)
+
+plot(vmes, add=TRUE, col="white", lwd=1.5)
+plot(josephine, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(berlengas, add=TRUE, col="white", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(alenteo, add=TRUE, col="white", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(greatmeteor, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(fracturahayes, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(bancovigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(kings, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="white", lwd=1.5)
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+e <- ext(aquapres)
+
+x_range <- e[2] - e[1]
+y_range <- e[4] - e[3]
+
+# Position (near top-left)
+arrow_x <- e[1] + 0.05 * x_range
+arrow_y <- e[4] - 0.03 * y_range
+
+# Arrow length (scaled to map, not fixed numbers)
+arrow_len <- 0.08 * y_range
+
+# Box padding
+pad_x <- 0.02 * x_range
+pad_y <- 0.02 * y_range
+
+# Rectangle around arrow + label
+box_left   <- arrow_x - pad_x
+box_right  <- arrow_x + 0.07 * x_range
+box_bottom <- arrow_y - arrow_len - pad_y -0.3
+box_top    <- arrow_y + pad_y
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.5),
+     border = NA)
+
+# North arrow
+arrows(arrow_x, arrow_y - arrow_len,
+       arrow_x, arrow_y,
+       length = 0.05, lwd = 2, col = "black")
+
+# Label
+text(arrow_x, arrow_y - 0.1 * y_range,
+     "N", font = 2, cex = 0.9, col = "black")
+
+
+terra::sbar(d = 100,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
 #
-plot(st_geometry(ospcol), add = TRUE, border = "black", lwd = 1.7, col = NA)
-plot(st_geometry(ospcola), add = TRUE, border = "black", lwd = 1.7, col = NA)
-plot(st_geometry(torremadeira), add = TRUE, border = "black", lwd = 1.7, col = NA)
-plot(st_geometry(greatmeteor), add = TRUE, border ="black", lwd = 1.7, col = NA)
-plot(st_geometry(naz), add = TRUE, border = "black", lwd = 1.7, col = NA)
-plot(st_geometry(cabosaovi), add = TRUE, border = "black", lwd = 1.7, col = NA)
-plot(st_geometry(fracturahayes), add = TRUE, border = "black", lty = "dotted", lwd = 1.7, col = NA)
-plot(st_geometry(vulcoesdelama), add = TRUE, border = "black", lty = "dotted", lwd = 1.7, col = NA)
-plot(st_geometry(bancovigo), add = TRUE, border = "black", lty = "dotted", lwd = 1.7, col = NA)
-plot(st_geometry(baiaarmacaodepera), add = TRUE, border = "black", lty = "dotted", lwd = 1.7, col = NA)
-plot(st_geometry(amperecoral), add = TRUE, border = "black", lty = "dotted", lwd = 1.7, col = NA)
-plot(st_geometry(vmes), add = TRUE, pch = 17, col = "black", fill = "red", lwd = 3)
-plot(st_geometry(altair), add = TRUE, border = "black", lwd = 1.7, col = NA)
-plot(st_geometry(antialtair), add = TRUE, border = "black", lwd = 1.7, col = NA)
-plot(st_geometry(marna), add = TRUE, border = "black", lwd = 1.7, col = NA)
-plot(st_geometry(josephine), add = TRUE, border = "black", lwd = 1.7, col = NA)
+rescaled_raster_list <- lapply(rasterspres, rescale)
 
-lines(c(scalebar_x, scalebar_x + scalebar_length / 100), 
-      c(scalebar_y, scalebar_y), lwd = 2, col = "black")
-text(scalebar_x + scalebar_length / 200, scalebar_y - 0.5, 
-     paste0(scalebar_length, " km"), cex = 0.6, adj = c(0.5, 1))
-addnortharrow(pos = "topleft", padin = c(0.1, 0.1), scale = 0.4, col = "black")
+conpres<-rescaled_raster_list[grep("^(balmus|censqu|dip|car|dercor|cetmax|hopatl|hip|lamnas|eub|squ|thuthy|raj|cencoe).*pres$", names(rescaled_raster_list), value = TRUE)]
 
-plot(NA, xlim = c(0, 1), ylim = c(0, 1), type = "n", xaxt = "n", yaxt = "n", axes= FALSE)
-legend("bottomright", 
-       legend = c("Jurisdictional borders", "MPA", "Suggested MPA", "VME"), 
-       col = c("grey", "black", "black", "black"), 
-       lty = c("solid", "solid", "dotted", NA), 
-       lwd = c(2, 2, 2, 2), 
-       pch = c(NA, NA, NA, 17), 
-       cex = 2, 
-       inset = c(0.05, 0.03))
+conpres<-rast(conpres)
+# Mean across layers
+conpres <- app(conpres, fun = mean, na.rm = TRUE)
+conpres<-rescale(conpres)
+terra::plot(conpres,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
 
-#example 2
+title(main = "a) Baseline scenario",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
 
-file_path <- "C:/xxx/turismopres.tif"
-turismopres<-stack(file_path)
 
-crs(turismopres)
-azores <- st_transform(ecp, crs(turismopres))
-ecp <- st_transform(ecp, crs(turismopres))
-conti <- st_transform(conti, crs(turismopres))
-madeira <- st_transform(madeira, crs(turismopres))
-conticlose <- st_transform(conticlose, crs(turismopres))
+plot(grat, add = TRUE, col = "grey")
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
 
-plot(turismo24555, col=cols)
-plot(grat, add = TRUE, col = "white")
-north(xy="topleft", col = "black",type=2)
-scalebar_length <- 500  # 500 km
-scalebar_x <- ext(turismopres)[1] + 2
-scalebar_y <- ext(turismopres)[3] + 2
-lines(c(scalebar_x, scalebar_x + scalebar_length / 100), c(scalebar_y, scalebar_y), lwd = 2, col = "black")
-text(scalebar_x + scalebar_length / 200, scalebar_y + 0.8, paste0(scalebar_length, " km"), cex = 0.8)
-breaks <- seq(0, 1, length.out=100)
-addnortharrow(pos = "topleft", padin = c(0.1, 0.1), scale = 0.4, col = "black")
-north(xy="topleft", col = "black",type=2, cex=6)
 
-plot(azores, add = TRUE, col = "transparent", border = "white",lwd=2)
-plot(conticlose, add = TRUE, col = "transparent", border = "white",lwd=2)
-plot(madeira, add = TRUE, col = "transparent", border = "white", lwd=2)
-plot(conti, add = TRUE, col = "transparent", border = "white",lwd=2)
+plot(platcont, add = TRUE, col = "transparent", border = "grey",lwd=1.5)
+plot(zeemad, add=TRUE, col ="grey", lwd=1.5)
+plot(zeeacores, add=TRUE, col ="grey", lwd=1.5)
+plot(zeecont, add=TRUE, col ="grey", lwd=1.5)
+ls()
+plot(vmes, add=TRUE, col="white", lwd=1.5, pch = 17)
+plot(josephine, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(berlengas, add=TRUE, col="white", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="black", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="white",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="white",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(alenteo, add=TRUE, col="white",border="white", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(greatmeteor, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(fracturahayes, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="black", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="black", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(kings, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="white", lwd=1.5)
 
-contiturismopres<-mask(turismopres, conti)
-conticloseturismopres<-mask(turismopres, conticlose)
-madeiraturismopres<-mask(turismopres, madeira)
-azoresturismopres<-mask(turismopres, azores)
-ecpturismopres<-mask(turismopres, ecp)
+plot(vmes, add=TRUE, col="white", lwd=1.5)
+plot(josephine, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(berlengas, add=TRUE, col="white", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(alenteo, add=TRUE, col="white", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(greatmeteor, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(fracturahayes, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(bancovigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(kings, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="white", lwd=1.5)
 
-breaks <- seq(0, 1, length.out=100)
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
 
-plot(contiturismopres, col=cols)
-plot(conticloseturismopres, col=cols, add=TRUE)
-plot(madeiraturismopres, col=cols, add=TRUE)
-plot(azoresturismopres, col=cols, add=TRUE)
-plot(ecpturismopres, col=cols, add=TRUE)
 
-#References:
+e <- ext(conpres)  # don't shadow with variable named 'ext'
 
-Mikhailov, A., 2019. Turbo, an improved rainbow colormap for visualization. Google AI Blog, 10(15-16), p.8.
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+####585#######585#########5##
+#-----------585-------------#
+####585#######585#########5##
+rescaled_raster_list <- lapply(rasters58555, rescale)
+
+con58555<-rescaled_raster_list[grep("^(balmus|censqu|dip|car|dercor|cetmax|hopatl|hip|lamnas|eub|squ|thuthy|raj|cencoe).*58555$", names(rescaled_raster_list), value = TRUE)]
+con58555<-rast(con58555)
+# Mean across layers
+con58555 <- app(con58555, fun = mean, na.rm = TRUE)
+con58555<-rescale(con58555)
+diff55 <- con58555 -conpres
+
+terra::plot(con58555,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
+
+terra::plot(con58595,
+            col     = viridis(10),
+            colNA   = "grey",
+            legend  = TRUE,
+            plg     = list(title = " Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+terra::plot(diff55,
+            col     = colorRampPalette(c("orange", "white","blue"))(10),
+            colNA   = "grey",
+            range   = c(-1, 1),          # forces legend extent
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+title(main = "b) 2050-2060, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+plot(platcont, add = TRUE, col = "transparent", border = "grey",lwd=1.5)
+plot(zeemad, add=TRUE, col ="grey", lwd=1.5)
+plot(zeeacores, add=TRUE, col ="grey", lwd=1.5)
+plot(zeecont, add=TRUE, col ="grey", lwd=1.5)
+ls()
+plot(vmes, add=TRUE, col="white", lwd=1.5, pch = 17)
+plot(josephine, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(berlengas, add=TRUE, col="white", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="black", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="white",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="white",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(alenteo, add=TRUE, col="white",border="white", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(greatmeteor, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(fracturahayes, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="black", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="black", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(kings, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="white", lwd=1.5)
+
+plot(vmes, add=TRUE, col="white", lwd=1.5)
+plot(josephine, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(berlengas, add=TRUE, col="white", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(alenteo, add=TRUE, col="white", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(greatmeteor, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(fracturahayes, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(bancovigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(kings, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="white", lwd=1.5)
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+e <- ext(conpres)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+####585#######585#########5##
+#-----------595-------------#
+####585#######585#########5##
+rescaled_raster_list <- lapply(rasters58595, rescale)
+
+aqua58595<-rescaled_raster_list[grep("^(balmus|censqu|dip|car|dercor|cetmax|hopatl|hip|lamnas|eub|squ|thuthy|raj|cencoe).*58595$", names(rescaled_raster_list), value = TRUE)]
+
+
+aqua58595<-rast(aqua58595)
+# Mean across layers
+aqua58595 <- app(aqua58595, fun = mean, na.rm = TRUE)
+aqua58595<-rescale(aqua58595)
+
+
+rescaled_raster_list <- lapply(rasters58595, rescale)
+
+con58595<-rasters58595[grep("^(balmus|censqu|dip|car|dercor|cetmax|hopatl|hip|lamnas|eub|squ|thuthy|raj|cencoe).*58595$", names(rasters58595), value = TRUE)]
+con58595<-rast(con58595)
+con58595 <-rescale(con58595)
+
+# Mean across layers
+
+con58595 <- app(con58595, fun = mean, na.rm = TRUE)
+diff55 <- con58555 -conpres
+dev.new(width = 10, height = 8)
+# then run all your plot code
+terra::plot(aqua58595,
+            col     = viridis(10),
+            colNA   = "grey",
+            range   = c(0, 1),
+            legend  = TRUE,
+            plg     = list(title = "Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8,
+                           at = c(0, 0.5, 1),
+                           labels = c("Low (0)", "0.5", "High (1)"),
+                           label.offset = 0.5))
+
+
+portugal_utm <- project(portugal, crs(aqua58595))
+
+plot(grat, add=TRUE, col="grey80")
+plot(portugal_utm, add = TRUE,
+     border = "grey30",
+     lwd = 1.2)
+
+
+
+terra::plot(con58595,
+            col     = viridis(10),
+            colNA   = "grey",
+            legend  = TRUE,
+            plg     = list(title = " Occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+terra::plot(diff55,
+            col     = colorRampPalette(c("orange", "white","blue"))(10),
+            colNA   = "grey",
+            range   = c(-1, 1),          # forces legend extent
+            legend  = TRUE,
+            plg     = list(title = " Δ occurrence\nprobability",
+                           title.cex = 0.8,
+                           cex = 0.8))
+
+title(main = "c) 2090-2100, SSP 5-8.5",
+      adj  = 0,        # 0 = left, 0.5 = centre, 1 = right
+      cex.main = 0.9,
+      font.main = 1,   # 1 = plain, 2 = bold
+      line = 3)        # distance above plot, increase to push higher
+
+plot(st_geometry(st_cast(platcont, "MULTILINESTRING")), add = TRUE, col = "grey", lwd = 1.5)
+
+plot(platcont, add = TRUE, col = "transparent", border = "grey",lwd=1.5)
+plot(zeemad, add=TRUE, col ="grey", lwd=1.5)
+plot(zeeacores, add=TRUE, col ="grey", lwd=1.5)
+plot(zeecont, add=TRUE, col ="grey", lwd=1.5)
+ls()
+plot(vmes, add=TRUE, col="white", lwd=1.5, pch = 17)
+plot(josephine, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(berlengas, add=TRUE, col="white", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="black", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="white",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="white",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(alenteo, add=TRUE, col="white",border="white", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(greatmeteor, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(fracturahayes, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="black", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="black", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(kings, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="white", lwd=1.5)
+
+plot(vmes, add=TRUE, col="white", lwd=1.5)
+plot(josephine, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(berlengas, add=TRUE, col="white", lwd=1.5)
+plot(bancodevigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(antialtairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(alenteo, add=TRUE, col="white", lwd=1.5)
+plot(marna, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(greatmeteor, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(arrabida, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(faialpico, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(naz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(cabosaovi, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(fracturahayes, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(vulcoesdelama, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(bancovigo, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(amperecoral, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(baiaarmacaodepera, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(altairMPA, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(kings, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospars, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(osparz, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcol, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(ospcola, add=TRUE, col="transparent",border="white", lwd=1.5)
+plot(torremadeira, add=TRUE, col="transparent",border="white", lwd=1.5)
+
+for (i in seq_len(nrow(labels))) {
+  w <- strwidth(labels$name[i],  cex = 0.8) / 2 * 1.2
+  h <- strheight(labels$name[i], cex = 0.8) / 2 * 1.5
+  
+  rect(labels$lon[i] - w, labels$lat[i] - h,
+       labels$lon[i] + w, labels$lat[i] + h,
+       col = adjustcolor("white", alpha.f = 0.6),  # 0 = fully transparent, 1 = opaque
+       border = NA)
+  
+  text(labels$lon[i], labels$lat[i], labels$name[i],
+       cex = 0.8, font = 1, col = "black")
+}
+
+
+e <- ext(con58595)  # don't shadow with variable named 'ext'
+
+arrow_x <- e[1] + 0.07 * (e[2] - e[1])   # near left edge
+arrow_y <- e[4] - 0.07 * (e[4] - e[3])   # near top edge
+
+
+box_left   <- arrow_x - 0.8
+box_right  <- arrow_x + 0.8
+box_bottom <- arrow_y - 3.8   # below the N
+box_top    <- arrow_y + 0.3   # above arrow tip
+
+rect(box_left, box_bottom, box_right, box_top,
+     col = adjustcolor("white", alpha.f = 0.6),
+     border = NA)
+
+arrows(arrow_x, arrow_y - 2,
+       arrow_x, arrow_y,
+       length = 0.08, lwd = 2, col = "black")
+
+text(arrow_x, arrow_y - 3,
+     "N", font = 1, cex = 0.8, col = "black")
+
+
+terra::sbar(d = 500,           # distance in km
+            xy = "bottomleft", # position
+            type = "bar",
+            divs = 2,           # number of divisions
+            below = "km",
+            lonlat = TRUE,      # important: your raster is in degrees
+            col = "black",
+            cex = 0.5)
+
+
+
+
+
+plot(st_geometry(platcont), add = TRUE, col = "transparent", border = "white", lwd = 1.5)
+plot(st_geometry(zeemad),   add = TRUE, col = "grey",  lwd = 1.5)
+plot(st_geometry(zeeacores), add = TRUE, col = "grey", lwd = 1.5)
+plot(st_geometry(zeecont),  add = TRUE, col = "grey",  lwd = 1.5)
+plot(st_geometry(vmes),     add = TRUE, col = "white", lwd = 1.5, pch = ...)
+plot(st_geometry(josephine), add = TRUE, col = "transparent", border = ..., lwd = ...)
+plot(st_geometry(berlengas), add = TRUE, col = "white", lwd = 1.5)
+
 
